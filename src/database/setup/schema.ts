@@ -1,10 +1,10 @@
 export const schemaStatements = [
-  `CREATE TABLE IF NOT EXISTS superset (
+  `CREATE TABLE IF NOT EXISTS supersets (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
       number INTEGER,
       note TEXT
   )`,
-  `CREATE TABLE IF NOT EXISTS workout_session (
+  `CREATE TABLE IF NOT EXISTS workouts (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
       date TEXT NOT NULL,
       time TEXT NOT NULL,
@@ -17,17 +17,17 @@ export const schemaStatements = [
       active INTEGER,
       muscle_group INTEGER
   )`,
-  `CREATE TABLE IF NOT EXISTS exercise_in_session (
+  `CREATE TABLE IF NOT EXISTS session_exercises (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
       note TEXT,
-      session INTEGER NOT NULL,
+      session_id INTEGER NOT NULL,
       exercise_id INTEGER NOT NULL,
-      superset INTEGER,
-      FOREIGN KEY(session) REFERENCES workout_session(id),
+      superset_id INTEGER,
+      FOREIGN KEY(session_id) REFERENCES workouts(id),
       FOREIGN KEY(exercise_id) REFERENCES exercises(id),
-      FOREIGN KEY(superset) REFERENCES superset(id)
+      FOREIGN KEY(superset_id) REFERENCES supersets(id)
   )`,
-  `CREATE TABLE IF NOT EXISTS workout_set (
+  `CREATE TABLE IF NOT EXISTS sets (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
       set_type INTEGER,
       rest TEXT,
@@ -35,7 +35,7 @@ export const schemaStatements = [
       reps INTEGER,
       completed INTEGER,
       note TEXT,
-      exercise_in_session_id INTEGER NOT NULL,
-      FOREIGN KEY(exercise_in_session_id) REFERENCES exercise_in_session(id)
+      session_exercise_id INTEGER NOT NULL,
+      FOREIGN KEY(session_exercise_id) REFERENCES session_exercises(id)
   )`
 ];

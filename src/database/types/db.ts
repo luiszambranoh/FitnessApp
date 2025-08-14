@@ -1,39 +1,39 @@
-export interface SetRow {
+export interface SupersetRow {
   id?: number;
-  set_type: number;
-  rest: string;
-  weight: number;
-  reps: number;
-  completed: number;
-  note: string;
-  exercise_in_session_id: number;
+  number: number;
+  note: string | null;
+}
+
+export interface WorkoutRow {
+  id?: number;
+  date: string;
+  time: string;
+  note: string | null;
 }
 
 export interface ExerciseRow {
   id?: number;
-  couting_type: number;
-  note: string;
-  active: number;
-  muscle_group: number;
+  couting_type: number | null;
+  note: string | null;
+  active: number | null;
+  muscle_group: number | null;
 }
 
-export interface SessionRow {
+export interface SessionExerciseRow {
   id?: number;
-  date: number;
-  time: string;
-  note: string;
-}
-
-export interface ExerciseInSessionRow {
-  id?: number;
-  note: string;
-  workout_session: number;
+  note: string | null;
+  session_id: number;
   exercise_id: number;
-  superset: number;
+  superset_id: number | null;
 }
 
-export interface SupersetRow {
+export interface SetRow {
   id?: number;
-  number: number;
-  note: string;
+  set_type: number | null;
+  rest: string | null;
+  weight: number | null;
+  reps: number | null;
+  completed: number | null;
+  note: string | null;
+  session_exercise_id: number;
 }

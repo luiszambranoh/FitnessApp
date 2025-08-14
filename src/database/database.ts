@@ -6,7 +6,7 @@ export const addSet = async (set: SetRow) => {
       (set_type, rest, weight, reps, completed, note, exercise_in_session_id) 
       VALUES (?, ?, ?, ?, ?, ?, ?)`
   try {
-    const data = [set.set_type, set.rest, set.weight, set.reps, set.completed, set.note, set.exercise_in_session_id]
+    const data = [set.set_type, set.rest, set.weight, set.reps, set.completed, set.note, set.session_exercise_id]
     await DatabaseHelper.insert(query, data);
   }
   catch(e){

@@ -13,12 +13,9 @@ const deleteOldDB = async () => {
 export const initDB = async () => {
   try {
     db = await SQLite.openDatabaseAsync('fitness.db');
-
     for (const sql of schemaStatements) {
-      console.log('Executing SQL:', sql);
       await db.execAsync(sql);
     }
-
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize DB:', error);

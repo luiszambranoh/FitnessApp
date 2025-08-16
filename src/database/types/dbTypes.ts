@@ -1,18 +1,18 @@
 export interface SupersetRow {
-  id?: number;
+  id: number;
   number: number;
   note: string | null;
 }
 
 export interface WorkoutRow {
-  id?: number;
+  id: number;
   date: string;
   time: string;
   note: string | null;
 }
 
 export interface ExerciseRow {
-  id?: number;
+  id: number;
   couting_type: number | null;
   note: string | null;
   active: number | null;
@@ -20,7 +20,7 @@ export interface ExerciseRow {
 }
 
 export interface SessionExerciseRow {
-  id?: number;
+  id: number;
   note: string | null;
   session_id: number;
   exercise_id: number;
@@ -28,7 +28,7 @@ export interface SessionExerciseRow {
 }
 
 export interface SetRow {
-  id?: number;
+  id: number;
   set_type: number | null;
   rest: string | null;
   weight: number | null;
@@ -37,3 +37,9 @@ export interface SetRow {
   note: string | null;
   session_exercise_id: number;
 }
+
+export type NewSuperset = Omit<SupersetRow, 'id'>;
+export type NewWorkout = Omit<WorkoutRow, 'id'>;
+export type NewExercise = Omit<ExerciseRow, 'id'>;
+export type NewSessionExercise = Omit<SessionExerciseRow, 'id'>;
+export type NewSet = Omit<SetRow, 'id'>;

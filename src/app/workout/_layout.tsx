@@ -8,7 +8,7 @@ export default function StackLayout(){
         title: "Workout"
       }}
       />
-      <Stack.Screen name="/workoutid/[workout_id]"/>
+      <Stack.Screen name="[workout_id]"/>
     </Stack>
   )
 }

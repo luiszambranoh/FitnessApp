@@ -1,12 +1,13 @@
 import { router } from "expo-router";
-import { Button, View, Text, FlatList } from "react-native";
-import { WorkoutService } from '../../../database/database';
+import { Button, View, Text, FlatList, Pressable } from "react-native";
+import { WorkoutService } from '../../database/database';
 import { useEffect, useState } from "react";
-import { initDB } from "../../../database/setup/init";
-import { WorkoutRow } from "../../../database/types/dbTypes";
+import { initDB } from "../../database/setup/init";
+import { WorkoutRow } from "../../database/types/dbTypes";
 
 export default function WorkoutScreen() {
   const [workouts, setWorkouts] = useState<WorkoutRow[]>([]);
+  const [onWorkoutPage, setOnWorkoutPage] = useState<boolean>(false);
 
   useEffect(() => {
     const initialize = async () => {
@@ -20,7 +21,7 @@ export default function WorkoutScreen() {
     };
 
     initialize();
-  }, []);
+  }, [onWorkoutPage]);
   
   const handlePress = async () => {
     try {
@@ -37,11 +38,17 @@ export default function WorkoutScreen() {
   };
 
   const renderItem = ({ item }: { item: WorkoutRow }) => (
-    <View className="flex-row p-4 border-b border-gray-200">
+    <Pressable
+      className="flex-row p-4 border-b border-gray-200"
+      onPress={() => {
+        router.navigate(`/workout/${item.id}`)
+        setOnWorkoutPage(true);
+      }}
+    >
       <Text className="flex-1">{new Date(item.date).toLocaleDateString()}</Text>
       <Text className="flex-1">{item.time}</Text>
       <Text className="flex-1">{item.note}</Text>
-    </View>
+    </Pressable>
   );
 
   return (

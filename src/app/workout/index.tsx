@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { Button, View, Text, FlatList, Pressable } from "react-native";
-import { WorkoutService } from '../../database/database';
+import { ExerciseService, SessionExerciseService, WorkoutService } from '../../database/database';
 import { useEffect, useState } from "react";
 import { initDB } from "../../database/setup/init";
 import { WorkoutRow } from "../../database/types/dbTypes";
@@ -15,6 +15,9 @@ export default function WorkoutScreen() {
         await initDB();
         const s = await WorkoutService.getAll();
         setWorkouts(s);
+        console.log(s);
+        console.log(await WorkoutService.getAll());
+        console.log(await ExerciseService.getAll());
       } catch (e) {
         console.error("Layout DB Init Error:", e);
       }

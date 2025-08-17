@@ -40,8 +40,8 @@ export class WorkoutService {
 
 export class ExerciseService {
   static async add(exercise: NewExercise): Promise<number | null> {
-    const query = `INSERT INTO exercises (couting_type, note, active, muscle_group) VALUES (?, ?, ?, ?)`;
-    const params = [exercise.couting_type, exercise.note, exercise.active, exercise.muscle_group];
+    const query = `INSERT INTO exercises (name, counting_type, note, active) VALUES (?, ?, ?, ?)`;
+    const params = [exercise.name, exercise.couting_type, exercise.note, exercise.active];
     return DatabaseHelper.insert(query, params);
   }
 
@@ -56,8 +56,8 @@ export class ExerciseService {
 
   static async update(exercise: ExerciseRow): Promise<boolean> {
     if (!exercise.id) return false;
-    const query = `UPDATE exercises SET couting_type = ?, note = ?, active = ?, muscle_group = ? WHERE id = ?`;
-    const params = [exercise.couting_type, exercise.note, exercise.active, exercise.muscle_group, exercise.id];
+    const query = `UPDATE exercises SET name = ?, counting_type = ?, note = ?, active = ? WHERE id = ?`;
+    const params = [exercise.name, exercise.couting_type, exercise.note, exercise.active, exercise.id];
     return DatabaseHelper.update(query, params);
   }
 

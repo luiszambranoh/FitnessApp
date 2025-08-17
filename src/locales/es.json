@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "title": "Configuración",
+    "exercises": "Ejercicios",
+    "theme": "Tema",
+    "language": "Idioma",
+    "bodyData": "Datos Corporales",
+    "routine": "Rutina"
+  },
+  "createExercise": {
+    "title": "Crear Nuevo Ejercicio",
+    "namePlaceholder": "Nombre del Ejercicio",
+    "countingTypePlaceholder": "Tipo de Conteo (reps o tiempo)",
+    "notePlaceholder": "Nota (opcional)",
+    "activePlaceholder": "Activo (1 para activo, 0 para inactivo)",
+    "button": "Crear Ejercicio",
+    "success": "¡Ejercicio creado con éxito!",
+    "fail": "Error al crear el ejercicio.",
+    "error": "Ocurrió un error al agregar el ejercicio.",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio.",
+      "countingTypeRequired": "El tipo de conteo es obligatorio.",
+      "countingTypeInvalid": "Debe ser \"reps\" o \"time\""
+    }
+  },
+  "exercises": {
+    "createButton": "Crear Nuevo Ejercicio"
+  },
+  "theme": {
+    "prompt": "Selecciona el tema que prefieras para la aplicación.",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "prompt": "Selecciona tu idioma de preferencia.",
+    "english": "English",
+    "spanish": "Español"
+  },
+  "general": {
+    "developing": "En desarrollo"
+  }
+}

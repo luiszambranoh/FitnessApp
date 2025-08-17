@@ -12,10 +12,10 @@ export const schemaStatements = [
   )`,
   `CREATE TABLE IF NOT EXISTS exercises (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-      couting_type INTEGER,
+      name TEXT NOT NULL,
+      counting_type TEXT NOT NULL,
       note TEXT,
-      active INTEGER,
-      muscle_group INTEGER
+      active INTEGER DEFAULT 1
   )`,
   `CREATE TABLE IF NOT EXISTS session_exercises (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,

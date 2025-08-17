@@ -1,3 +1,5 @@
+export type CountingType = 'reps' | 'time';
+
 export interface SupersetRow {
   id: number;
   number: number;
@@ -13,10 +15,10 @@ export interface WorkoutRow {
 
 export interface ExerciseRow {
   id: number;
-  couting_type: number | null;
+  name: string;
+  couting_type: CountingType;
   note: string | null;
   active: number | null;
-  muscle_group: number | null;
 }
 
 export interface SessionExerciseRow {

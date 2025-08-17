@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router"
+import { Link, router, useLocalSearchParams } from "expo-router"
 import { Button, View, Text } from "react-native"
 
 export default function WorkoutID(){
@@ -7,6 +7,7 @@ export default function WorkoutID(){
   return (
     <View>
       <Text>something: {workout_id}</Text>
+      <Button title="Add Exercise" onPress={() => router.navigate(`/workout/${workout_id}/add-exercise`)}/>
     </View>
   )
 }

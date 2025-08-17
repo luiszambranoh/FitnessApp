@@ -38,6 +38,61 @@
     "spanish": "Español"
   },
   "general": {
-    "developing": "Developing"
+    "developing": "Developing",
+    "error": "Error",
+    "success": "Success"
+  },
+  "workout": {
+    "title": "Workout",
+    "detailsTitle": "Workout Details",
+    "something": "Something:",
+    "addExerciseButton": "Add Exercise",
+    "editWorkoutTitle": "Edit Workout",
+    "updateWorkoutButton": "Update Workout",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time"
+  },
+  "workoutList": {
+    "title": "Workouts",
+    "addWorkoutButton": "Add New Workout"
+  },
+  "addExercise": {
+    "title": "Add Exercise to Workout",
+    "exerciseIdPlaceholder": "Exercise ID (e.g., 1)",
+    "notePlaceholder": "Note (optional)",
+    "button": "Add Exercise to Workout",
+    "missingWorkoutId": "Workout ID is missing.",
+    "exerciseIdRequired": "Exercise ID is required.",
+    "success": "Exercise added to workout!",
+    "fail": "Failed to add exercise.",
+    "error": "An error occurred while adding the exercise.",
+    "selectExercise": "Please select an exercise.",
+    "selectedExercisesTitle": "Selected Exercises",
+    "allExercisesTitle": "All Exercises",
+    "addExercisesButton_one": "Add {{count}} Exercise",
+    "addExercisesButton_other": "Add {{count}} Exercises"
+  },
+  "workoutList": {
+    "newWorkoutButton": "New Workout",
+    "dateHeader": "Date",
+    "timeHeader": "Time",
+    "createWorkoutFailed": "Failed to create a new workout: ID was not returned.",
+    "createWorkoutError": "An error occurred while creating the workout:",
+    "edit": "Edit",
+    "remove": "Remove",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this workout?",
+    "yes": "Yes",
+    "no": "No",
+    "deleteSuccess": "Workout deleted successfully!",
+    "deleteFail": "Failed to delete workout."
+  },
+  "editWorkout": {
+    "workoutNotFound": "Workout not found.",
+    "workoutDataNotLoaded": "Workout data not loaded.",
+    "updateSuccess": "Workout updated successfully!",
+    "updateFail": "Failed to update workout.",
+    "updateError": "An error occurred while updating the workout.",
+    "loading": "Loading..."
   }
 }

@@ -11,8 +11,6 @@ export default function ExercisesScreen() {
       <Link href="/profile/create-exercise" className={form.button}>
         <Text className={form.buttonText}>{t('exercises.createButton')}</Text>
       </Link>
-      
-      {/* You can add a list of existing exercises here in the future */}
     </View>
   );
 }

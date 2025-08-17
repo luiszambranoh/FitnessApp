@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, TouchableOpacity } from 'react-native';
-import { form, dropdown } from '../../styles/theme';
+import { form, dropdown } from '../styles/theme';
 
 export interface DropdownItem {
   label: string;

@@ -1,70 +1,132 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, Alert, FlatList, StyleSheet } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
-import { SessionExerciseService } from "../../../database/database";
-import { NewSessionExercise } from "../../../database/types/dbTypes";
+import { SessionExerciseService, ExerciseService } from "../../../database/database";
+import { NewSessionExercise, ExerciseRow } from "../../../database/types/dbTypes";
+import { useTranslation } from "react-i18next";
+import { layout, form } from "../../../styles/theme";
+import ExerciseCard from "../../../components/ExerciseCard";
 
 export default function AddExercise() {
   const { workout_id } = useLocalSearchParams();
-  const [exerciseId, setExerciseId] = useState<string>(''); // For simplicity, using string for now
-  const [note, setNote] = useState<string>('');
+  const [allExercises, setAllExercises] = useState<ExerciseRow[]>([]);
+  const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
+  const { t } = useTranslation();
 
-  const handleAddExercise = async () => {
-    if (!workout_id) {
-      Alert.alert("Error", "Workout ID is missing.");
-      return;
-    }
-    if (!exerciseId) {
-      Alert.alert("Error", "Exercise ID is required.");
-      return;
-    }
-
-    const newSessionExercise: NewSessionExercise = {
-      session_id: Number(workout_id),
-      exercise_id: Number(exerciseId),
-      note: note || null,
-      superset_id: null, // Assuming no superset for now
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const fetchedExercises = await ExerciseService.getAll();
+        setAllExercises(fetchedExercises);
+      } catch (error) {
+        console.error("Error fetching exercises:", error);
+        Alert.alert(t('general.error'), "Failed to load exercises."); // Using general.error
+      }
     };
+    fetchExercises();
+  }, []);
+
+  const toggleExerciseSelection = (exerciseId: number) => {
+    setSelectedExerciseIds((prevSelectedIds) => {
+      if (prevSelectedIds.includes(exerciseId)) {
+        return prevSelectedIds.filter((id) => id !== exerciseId);
+      } else {
+        return [...prevSelectedIds, exerciseId];
+      }
+    });
+  };
+
+  const handleAddExercises = async () => {
+    if (!workout_id) {
+      Alert.alert(t('general.error'), t('addExercise.missingWorkoutId'));
+      return;
+    }
+    if (selectedExerciseIds.length === 0) {
+      Alert.alert(t('general.error'), t('addExercise.selectExercise')); // Using new translation key
+      return;
+    }
 
     try {
-      const result = await SessionExerciseService.add(newSessionExercise);
-      if (result) {
-        Alert.alert("Success", "Exercise added to workout!");
-        router.back(); // Go back to the workout details page
-      } else {
-        Alert.alert("Error", "Failed to add exercise.");
+      for (const exerciseId of selectedExerciseIds) {
+        const newSessionExercise: NewSessionExercise = {
+          session_id: Number(workout_id),
+          exercise_id: exerciseId,
+          note: null,
+          superset_id: null,
+        };
+        await SessionExerciseService.add(newSessionExercise);
       }
+      Alert.alert(t('general.success'), t('addExercise.success')); // Using general.success
+      router.back();
     } catch (error) {
-      console.error("Error adding session exercise:", error);
-      Alert.alert("Error", "An error occurred while adding the exercise.");
+      console.error("Error adding session exercises:", error);
+      Alert.alert(t('general.error'), t('addExercise.error'));
     }
   };
 
+  const selectedExercises = allExercises.filter((exercise) =>
+    selectedExerciseIds.includes(exercise.id)
+  );
+  const availableExercises = allExercises.filter(
+    (exercise) => !selectedExerciseIds.includes(exercise.id)
+  );
+
+  const renderExerciseCard = ({ item }: { item: ExerciseRow }) => (
+    <ExerciseCard
+      exercise={item}
+      isSelected={selectedExerciseIds.includes(item.id)}
+      onSelect={toggleExerciseSelection}
+    />
+  );
+
   return (
-    <View className="flex-1 p-5 bg-gray-100">
-      <Text className="text-xl mb-5 text-center font-bold">Add Exercise for Workout ID: {workout_id}</Text>
+    <View className={layout.container}>
+      <Text className={layout.title}>{t('addExercise.title')} {workout_id}</Text>
 
-      <TextInput
-        className="border border-gray-300 p-3 mb-4 rounded-lg bg-white"
-        placeholder="Exercise ID (e.g., 1)"
-        keyboardType="numeric"
-        value={exerciseId}
-        onChangeText={setExerciseId}
-      />
+      {selectedExercises.length > 0 && (
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>{t('addExercise.selectedExercisesTitle')}</Text>
+          <FlatList
+            data={selectedExercises}
+            keyExtractor={(item) => `selected-${item.id.toString()}`}
+            renderItem={renderExerciseCard}
+            horizontal={true} // Optional: for horizontal scrolling of selected exercises
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+      )}
 
-      <TextInput
-        className="border border-gray-300 p-3 mb-6 rounded-lg bg-white"
-        placeholder="Note (optional)"
-        value={note}
-        onChangeText={setNote}
-      />
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{t('addExercise.allExercisesTitle')}</Text>
+        <FlatList
+          data={availableExercises}
+          keyExtractor={(item) => `all-${item.id.toString()}`}
+          renderItem={renderExerciseCard}
+        />
+      </View>
 
-      <TouchableOpacity
-        onPress={handleAddExercise}
-        className="bg-blue-500 p-4 rounded-lg items-center"
-      >
-        <Text className="text-white font-bold">Add Exercise to Workout</Text>
-      </TouchableOpacity>
+      {selectedExerciseIds.length > 0 && (
+        <TouchableOpacity
+          onPress={handleAddExercises}
+          className={form.button}
+        >
+          <Text className={form.buttonText}>
+            {t('addExercise.addExercisesButton_other', { count: selectedExerciseIds.length })}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333', // Adjust based on theme
+  },
+});

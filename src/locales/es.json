@@ -38,6 +38,61 @@
     "spanish": "Español"
   },
   "general": {
-    "developing": "En desarrollo"
+    "developing": "En desarrollo",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "workout": {
+    "title": "Entrenamiento",
+    "detailsTitle": "Detalles del Entrenamiento",
+    "something": "Algo:",
+    "addExerciseButton": "Agregar Ejercicio",
+    "editWorkoutTitle": "Editar Entrenamiento",
+    "updateWorkoutButton": "Actualizar Entrenamiento",
+    "selectDate": "Seleccionar Fecha",
+    "selectTime": "Seleccionar Hora"
+  },
+  "workoutList": {
+    "title": "Entrenamientos",
+    "addWorkoutButton": "Agregar Nuevo Entrenamiento"
+  },
+  "addExercise": {
+    "title": "Agregar Ejercicio al Entrenamiento",
+    "exerciseIdPlaceholder": "ID de Ejercicio (ej. 1)",
+    "notePlaceholder": "Nota (opcional)",
+    "button": "Agregar Ejercicio al Entrenamiento",
+    "missingWorkoutId": "Falta el ID del Entrenamiento.",
+    "exerciseIdRequired": "El ID del Ejercicio es obligatorio.",
+    "success": "¡Ejercicio agregado al entrenamiento!",
+    "fail": "Error al agregar el ejercicio.",
+    "error": "Ocurrió un error al agregar el ejercicio.",
+    "selectExercise": "Por favor, selecciona un ejercicio.",
+    "selectedExercisesTitle": "Ejercicios Seleccionados",
+    "allExercisesTitle": "Todos los Ejercicios",
+    "addExercisesButton_one": "Agregar {{count}} Ejercicio",
+    "addExercisesButton_other": "Agregar {{count}} Ejercicios"
+  },
+  "workoutList": {
+    "newWorkoutButton": "Nuevo Entrenamiento",
+    "dateHeader": "Fecha",
+    "timeHeader": "Hora",
+    "createWorkoutFailed": "Error al crear un nuevo entrenamiento: No se devolvió el ID.",
+    "createWorkoutError": "Ocurrió un error al crear el entrenamiento:",
+    "edit": "Editar",
+    "remove": "Eliminar",
+    "confirmDeleteTitle": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar este entrenamiento?",
+    "yes": "Sí",
+    "no": "No",
+    "deleteSuccess": "¡Entrenamiento eliminado con éxito!",
+    "deleteFail": "Error al eliminar el entrenamiento."
+  },
+  "editWorkout": {
+    "workoutNotFound": "Entrenamiento no encontrado.",
+    "workoutDataNotLoaded": "Datos del entrenamiento no cargados.",
+    "updateSuccess": "¡Entrenamiento actualizado con éxito!",
+    "updateFail": "Error al actualizar el entrenamiento.",
+    "updateError": "Ocurrió un error al actualizar el entrenamiento.",
+    "loading": "Cargando..."
   }
 }

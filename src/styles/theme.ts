@@ -19,7 +19,7 @@ export const list = {
   itemContainer: "flex-row items-center p-4 mb-2 bg-white dark:bg-gray-800 rounded-lg",
   itemText: "text-lg ml-4 text-gray-900 dark:text-gray-200",
   itemIcon: "text-gray-900 dark:text-gray-200",
-  itemChevron: "text-gray-400",
+  itemChevron: "text-gray-400 dark:text-gray-500",
 };
 
 export const dropdown = {
@@ -27,4 +27,18 @@ export const dropdown = {
   container: "absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg z-10 mt-1",
   item: "p-3 border-b border-gray-200 dark:border-gray-700",
   itemText: "text-gray-900 dark:text-gray-200",
+};
+
+export const table = {
+  headerContainer: "flex-row p-4 bg-gray-100 dark:bg-gray-700",
+  headerText: "flex-1 font-bold text-gray-900 dark:text-gray-100",
+  rowContainer: "flex-row p-4 border-b border-gray-200 dark:border-gray-700",
+  rowText: "flex-1 text-gray-900 dark:text-gray-200",
+};
+
+export const card = {
+  container: "flex-row items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md w-full",
+  image: "w-12 h-12 rounded-full mr-4",
+  text: "text-lg font-bold text-gray-900 dark:text-gray-100 flex-1",
+  indicator: "h-full bg-blue-500 absolute left-0 rounded-full",
 };

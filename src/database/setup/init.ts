@@ -1,6 +1,8 @@
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { schemaStatements } from './schema';
+import { preferencesService } from '../../services/preferencesService';
+import { seedDefaultExercises } from './seeder';
 
 export let db: SQLite.SQLiteDatabase;
 
@@ -12,10 +14,15 @@ const deleteOldDB = async () => {
 
 export const initDB = async () => {
   try {
-    /* await deleteOldDB(); */
     db = await SQLite.openDatabaseAsync('fitness.db');
     for (const sql of schemaStatements) {
       await db.execAsync(sql);
+    }
+    const preferences = await preferencesService.read();
+    if(preferences.exercisesAdded === false){
+      await seedDefaultExercises();
+      await preferencesService.write({...preferences, exercisesAdded: false});
+      console.log("xd")
     }
     console.log('✅ Database initialized successfully');
   } catch (error) {

@@ -2,10 +2,12 @@ import * as FileSystem from 'expo-file-system';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type Language = 'en' | 'es';
+export type ExercisesAdded = boolean;
 
 export interface Preferences {
   theme: Theme;
   language: Language;
+  exercisesAdded: ExercisesAdded;
 }
 
 const PREFERENCES_FILE_URI = `${FileSystem.documentDirectory}preferences.json`;
@@ -13,6 +15,7 @@ const PREFERENCES_FILE_URI = `${FileSystem.documentDirectory}preferences.json`;
 const defaultPreferences: Preferences = {
   theme: 'dark', // Defaulting to dark as per our design
   language: 'en', // Default to English
+  exercisesAdded: false
 };
 
 export const preferencesService = {

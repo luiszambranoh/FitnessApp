@@ -1,4 +1,5 @@
 export type CountingType = 'reps' | 'time';
+export type SetType = 'normal' | 'warm-up' | 'faliure' | 'dropset';
 
 export interface SupersetRow {
   id: number;
@@ -31,7 +32,7 @@ export interface SessionExerciseRow {
 
 export interface SetRow {
   id: number;
-  set_type: number | null;
+  set_type: SetType;
   rest: string | null;
   weight: number | null;
   reps: number | null;

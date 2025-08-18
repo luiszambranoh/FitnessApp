@@ -19,7 +19,7 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    compatibilityJSON: 'v3', // For React Native
+    compatibilityJSON: 'v4', // For React Native
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // react already safes from xss

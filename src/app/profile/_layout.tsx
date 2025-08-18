@@ -1,8 +1,10 @@
 import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "react-i18next";
 
 export default function StackLayout(){
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
 
   return (
     <Stack
@@ -16,37 +18,37 @@ export default function StackLayout(){
     >
       <Stack.Screen name="index"
         options={{
-          title: "Settings"
+          title: t('settings.title')
         }}
       />
       <Stack.Screen name="create-exercise"
         options={{
-          title: "Create Exercise"
+          title: t('createExercise.title')
         }}
       />
       <Stack.Screen name="exercises"
         options={{
-          title: "Exercises"
+          title: t('exercises.title')
         }}
       />
       <Stack.Screen name="theme"
         options={{
-          title: "Theme"
+          title: t('settings.theme')
         }}
       />
       <Stack.Screen name="language"
         options={{
-          title: "Language"
+          title: t('settings.language')
         }}
       />
       <Stack.Screen name="body-data"
         options={{
-          title: "Body Data"
+          title: t('settings.bodyData')
         }}
       />
       <Stack.Screen name="routine"
         options={{
-          title: "Routine"
+          title: t('settings.routine')
         }}
       />
     </Stack>

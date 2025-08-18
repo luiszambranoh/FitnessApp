@@ -12,7 +12,7 @@ const deleteOldDB = async () => {
 
 export const initDB = async () => {
   try {
-    await deleteOldDB(); // Add this line to delete the old DB before initializing
+    /* await deleteOldDB(); */
     db = await SQLite.openDatabaseAsync('fitness.db');
     for (const sql of schemaStatements) {
       await db.execAsync(sql);

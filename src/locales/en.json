@@ -1,4 +1,8 @@
 {
+  "tabs": {
+    "workout": "Workout",
+    "profile": "Profile"
+  },
   "settings": {
     "title": "Settings",
     "exercises": "Exercises",
@@ -24,7 +28,9 @@
     }
   },
   "exercises": {
-    "createButton": "Create New Exercise"
+    "title": "Exercises",
+    "createButton": "Create New Exercise",
+    "noExercises": "No exercises found."
   },
   "theme": {
     "prompt": "Select your preferred application theme.",
@@ -40,7 +46,12 @@
   "general": {
     "developing": "Developing",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    
+    "unknownCountingType": "Unknown Counting Type"
+  },
+  "common": {
+    "unknownExercise": "Unknown Exercise"
   },
   "workout": {
     "title": "Workout",
@@ -50,11 +61,58 @@
     "editWorkoutTitle": "Edit Workout",
     "updateWorkoutButton": "Update Workout",
     "selectDate": "Select Date",
-    "selectTime": "Select Time"
+    "selectTime": "Select Time",
+    "noSets": "No sets added yet.",
+    "noExercisesInWorkout": "No exercises added to this workout yet.",
+    
+    "completed": "Completed",
+    "markComplete": "Mark Complete",
+    "setTypePlaceholder": "Set Type",
+    "weightPlaceholder": "Weight",
+    "repsPlaceholder": "Reps",
+    "restPlaceholder": "Rest",
+    "notePlaceholder": "Note",
+    "addNotesPlaceholder": "Add notes here...",
+    "restTimer": "Rest Timer",
+    "off": "OFF",
+    
+    "previous": "PREVIOUS",
+    "kg": "KG",
+    
+    "confirmation": "CONFIRMATION",
+    "failure": "Failure",
+    "warmUp": "Warm Up",
+    "dropSet": "Drop Set",
+    "removeSet": "Remove Set",
+    "set": "Set",
+    "reps": "Reps",
+    "weight": "Weight",
+    "addSet": "Add Set",
+    "addExercise": "Add Exercise",
+    "noExercisesAdded": "No exercises added yet. Click the button above to add one!"
   },
-  "workoutList": {
-    "title": "Workouts",
-    "addWorkoutButton": "Add New Workout"
+  "workoutDetails": {
+    "invalidWorkoutId": "Invalid Workout ID.",
+    "failedToLoad": "Failed to load workout details.",
+    "failedToAddSet": "Failed to add set.",
+    "errorAddingSet": "Error adding set.",
+    "failedToUpdateSet": "Failed to update set.",
+    "failedToRemoveSet": "Failed to remove set."
+  },
+  "workoutScreen": {
+    "invalidId": "Invalid Workout ID.",
+    "loadFailed": "Failed to load workout details.",
+    "addSetFailed": "Failed to add set.",
+    "addSetError": "Error adding set.",
+    "updateSetFailed": "Failed to update set.",
+    "removeSetFailed": "Failed to remove set.",
+    "setColumn": "Set Type",
+    "repsColumn": "Reps",
+    "weightColumn": "Weight",
+    "checkColumn": "CHECK",
+    "addSetButton": "Add Set",
+    "addExerciseButton": "Add Exercise",
+    "noExercisesMessage": "No exercises added to this workout yet."
   },
   "addExercise": {
     "title": "Add Exercise to Workout",

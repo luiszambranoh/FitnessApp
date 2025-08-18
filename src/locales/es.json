@@ -1,4 +1,8 @@
 {
+  "tabs": {
+    "workout": "Entrenamiento",
+    "profile": "Perfil"
+  },
   "settings": {
     "title": "Configuración",
     "exercises": "Ejercicios",
@@ -24,7 +28,9 @@
     }
   },
   "exercises": {
-    "createButton": "Crear Nuevo Ejercicio"
+    "title": "Ejercicios",
+    "createButton": "Crear Nuevo Ejercicio",
+    "noExercises": "No se encontraron ejercicios."
   },
   "theme": {
     "prompt": "Selecciona el tema que prefieras para la aplicación.",
@@ -40,7 +46,12 @@
   "general": {
     "developing": "En desarrollo",
     "error": "Error",
-    "success": "Éxito"
+    "success": "Éxito",
+    
+    "unknownCountingType": "Tipo de Conteo Desconocido"
+  },
+  "common": {
+    "unknownExercise": "Ejercicio Desconocido"
   },
   "workout": {
     "title": "Entrenamiento",
@@ -50,11 +61,50 @@
     "editWorkoutTitle": "Editar Entrenamiento",
     "updateWorkoutButton": "Actualizar Entrenamiento",
     "selectDate": "Seleccionar Fecha",
-    "selectTime": "Seleccionar Hora"
+    "selectTime": "Seleccionar Hora",
+    "noSets": "No se han añadido series aún.",
+    "noExercisesInWorkout": "No se han añadido ejercicios a este entrenamiento aún.",
+    
+    "completed": "Completado",
+    "markComplete": "Marcar como Completado",
+    "setTypePlaceholder": "Tipo de Serie",
+    
+    "repsPlaceholder": "Repeticiones",
+    "restPlaceholder": "Descanso",
+    "notePlaceholder": "Nota",
+    "addNotesPlaceholder": "Añadir notas aquí...",
+    "restTimer": "Temporizador de Descanso",
+    "off": "APAGADO",
+    
+    "previous": "ANTERIOR",
+    "kg": "KG",
+    
+    "confirmation": "CONFIRMACIÓN",
+    "failure": "Fallo",
+    "warmUp": "Calentamiento",
+    "dropSet": "Serie Descendente",
+    "removeSet": "Eliminar Serie",
+    "set": "Serie",
+    "reps": "Reps",
+    "weight": "Peso",
+    "addSet": "Agregar Serie",
+    "addExercise": "Agregar Ejercicio",
+    "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!"
   },
-  "workoutList": {
-    "title": "Entrenamientos",
-    "addWorkoutButton": "Agregar Nuevo Entrenamiento"
+  "workoutScreen": {
+    "invalidId": "ID de Entrenamiento inválido.",
+    "loadFailed": "Error al cargar los detalles del entrenamiento.",
+    "addSetFailed": "Error al añadir la serie.",
+    "addSetError": "Error al añadir la serie.",
+    "updateSetFailed": "Error al actualizar la serie.",
+    "removeSetFailed": "Error al eliminar la serie.",
+    "setColumn": "SERIE",
+    "repsColumn": "REPS",
+    "weightColumn": "Peso",
+    "checkColumn": "CHECK",
+    "addSetButton": "Agregar Serie",
+    "addExerciseButton": "Agregar Ejercicio",
+    "noExercisesMessage": "No se han añadido ejercicios a este entrenamiento aún."
   },
   "addExercise": {
     "title": "Agregar Ejercicio al Entrenamiento",

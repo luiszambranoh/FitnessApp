@@ -4,7 +4,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { SessionExerciseService, ExerciseService } from "../../../database/database";
 import { NewSessionExercise, ExerciseRow } from "../../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
-import { layout, form } from "../../../styles/theme";
+import { layout, form, fixed } from "../../../styles/theme";
 import ExerciseCard from "../../../components/ExerciseCard";
 
 export default function AddExercise() {
@@ -67,9 +67,7 @@ export default function AddExercise() {
   const selectedExercises = allExercises.filter((exercise) =>
     selectedExerciseIds.includes(exercise.id)
   );
-  const availableExercises = allExercises.filter(
-    (exercise) => !selectedExerciseIds.includes(exercise.id)
-  );
+  const availableExercises = allExercises;
 
   const renderExerciseCard = ({ item }: { item: ExerciseRow }) => (
     <ExerciseCard
@@ -80,7 +78,7 @@ export default function AddExercise() {
   );
 
   return (
-    <View className={layout.container}>
+    <View className={`${layout.container} pb-20`}>
       <Text className={layout.title}>{t('addExercise.title')} {workout_id}</Text>
 
       {selectedExercises.length > 0 && (
@@ -90,7 +88,6 @@ export default function AddExercise() {
             data={selectedExercises}
             keyExtractor={(item) => `selected-${item.id.toString()}`}
             renderItem={renderExerciseCard}
-            horizontal={true} // Optional: for horizontal scrolling of selected exercises
             showsHorizontalScrollIndicator={false}
           />
         </View>
@@ -106,14 +103,16 @@ export default function AddExercise() {
       </View>
 
       {selectedExerciseIds.length > 0 && (
-        <TouchableOpacity
-          onPress={handleAddExercises}
-          className={form.button}
-        >
-          <Text className={form.buttonText}>
-            {t('addExercise.addExercisesButton_other', { count: selectedExerciseIds.length })}
-          </Text>
-        </TouchableOpacity>
+        <View className={fixed.bottomButtonContainer}>
+          <TouchableOpacity
+            onPress={handleAddExercises}
+            className={form.button}
+          >
+            <Text className={form.buttonText}>
+              {t('addExercise.addExercisesButton_other', { count: selectedExerciseIds.length })}
+            </Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );

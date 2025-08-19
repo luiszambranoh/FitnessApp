@@ -16,7 +16,8 @@ import {
   NewSet,
   SetType,
 } from "../../database/types/dbTypes";
-import SetOptionsDialog from "../../components/SetOptionsDialog";
+import SetOptionsContent from "../../components/SetOptionsContent";
+import BottomSheetDialog from "../../components/BottomSheetDialog";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
@@ -261,13 +262,17 @@ export default function WorkoutID() {
       />
 
       {selectedSet && (
-        <SetOptionsDialog
+        <BottomSheetDialog
           isVisible={selectedSet !== null}
           onClose={() => setSelectedSet(null)}
-          onSetTypeChange={handleSetTypeChange}
-          onDelete={() => handleRemoveSet(selectedSet.id)}
-          currentType={selectedSet.set_type}
-        />
+        >
+          <SetOptionsContent
+            onClose={() => setSelectedSet(null)}
+            onSetTypeChange={handleSetTypeChange}
+            onDelete={() => handleRemoveSet(selectedSet.id)}
+            currentType={selectedSet.set_type}
+          />
+        </BottomSheetDialog>
       )}
     </View>
   );

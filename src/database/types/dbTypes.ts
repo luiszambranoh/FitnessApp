@@ -1,5 +1,5 @@
 export type CountingType = 'reps' | 'time';
-export type SetType = 'normal' | 'warm-up' | 'faliure' | 'dropset';
+export type SetType = 'normal' | 'warm-up' | 'dropset';
 
 export interface SupersetRow {
   id: number;

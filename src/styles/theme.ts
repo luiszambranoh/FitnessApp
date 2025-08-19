@@ -107,7 +107,7 @@ export const workout = {
   setRowContainer: "flex-row justify-between items-center mb-2",
   setTypeButton: "w-1/5",
   setTypeText: "text-gray-900 dark:text-gray-100 text-center",
-  setInput: "border border-gray-300 dark:border-gray-600 p-2 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 w-1/4 text-center",
+  setInput: "wborder-gray-300 dark:border-gray-600 p-2 rounded-lg text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 w-1/4 text-center",
   setCheckButton: "w-1/5 items-center",
   addExerciseButton: "bg-blue-600 p-4 rounded-lg items-center my-4",
   noExercisesText: "text-center text-gray-500 dark:text-gray-400 mt-4",

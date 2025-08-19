@@ -14,7 +14,10 @@ import {
   ExerciseRow,
   SetRow,
   NewSet,
+  SetType,
 } from "../../database/types/dbTypes";
+import SetOptionsContent from "../../components/SetOptionsContent";
+import BottomSheetDialog from "../../components/BottomSheetDialog";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
@@ -34,6 +37,7 @@ export default function WorkoutID() {
   const { workout_id } = useLocalSearchParams();
   const { t } = useTranslation();
   const [sessionExercises, setSessionExercises] = useState<FullSessionExercise[]>([]);
+  const [selectedSet, setSelectedSet] = useState<SetRow | null>(null);
   const workoutIdNum = Number(workout_id);
 
   const fetchWorkoutDetails = useCallback(async () => {
@@ -138,66 +142,104 @@ export default function WorkoutID() {
     try {
       await SetService.delete(setId);
       fetchWorkoutDetails();
+      setSelectedSet(null); // Close the dialog
     } catch (error) {
       console.error("Error removing set:", error);
       Alert.alert(t('general.error'), t('workoutDetails.failedToRemoveSet'));
     }
   };
 
-  const renderExerciseBlock = ({ item }: { item: FullSessionExercise }) => (
-    <View className={workout.exerciseBlockContainer}>
-      <Text className={workout.exerciseName}>
-        {item.exerciseDetails?.name || t('general.unknownExercise')}
-      </Text>
+  const handleSetTypeChange = (newType: SetType) => {
+    if (!selectedSet) return;
 
-      <View className={workout.tableHeaderContainer}>
-        <Text className={workout.tableHeaderText}>{t('workout.set')}</Text>
-        <Text className={workout.tableHeaderText}>{t('workout.reps')}</Text>
-        <Text className={workout.tableHeaderText}>{t('workout.weight')}</Text>
-        <Text className={workout.tableHeaderText}>{t('workout.completed')}</Text>
-      </View>
+    const updatedSet = { ...selectedSet, set_type: newType };
 
-      {item.sets.map((setItem, index) => (
-        <View key={setItem.id} className={workout.setRowContainer}>
-          <TouchableOpacity className={workout.setTypeButton}>
-            <Text className={workout.setTypeText}>{index + 1}</Text>
-          </TouchableOpacity>
+    setSessionExercises((prev) =>
+      prev.map((se) => ({
+        ...se,
+        sets: se.sets.map((set) => (set.id === selectedSet.id ? updatedSet : set)),
+      }))
+    );
 
-          <TextInput
-            className={workout.setInput}
-            keyboardType="numeric"
-            value={setItem.reps?.toString() || ''}
-            onChangeText={(text) => handleSetChange(setItem.id, 'reps', text ? Number(text) : null)}
-          />
+    updateSetInDb(updatedSet);
+    setSelectedSet(null); // Close the dialog
+  };
 
-          <TextInput
-            className={workout.setInput}
-            keyboardType="numeric"
-            value={setItem.weight?.toString() || ''}
-            onChangeText={(text) => handleSetChange(setItem.id, 'weight', text ? Number(text) : null)}
-          />
+  const handleOpenSetOptions = (set: SetRow) => {
+    setSelectedSet(set);
+  };
 
-          <TouchableOpacity
-            className={workout.setCheckButton}
-            onPress={() => handleCompleteSet(setItem.id)}
-          >
-            <Feather
-              name={setItem.completed === 1 ? "check-circle" : "circle"}
-              size={24}
-              color={setItem.completed === 1 ? "green" : "gray"}
-            />
-          </TouchableOpacity>
+  const renderExerciseBlock = ({ item }: { item: FullSessionExercise }) => {
+    let normalSetCounter = 0;
+
+    return (
+      <View className={workout.exerciseBlockContainer}>
+        <Text className={workout.exerciseName}>
+          {item.exerciseDetails?.name || t('general.unknownExercise')}
+        </Text>
+
+        <View className={workout.tableHeaderContainer}>
+          <Text className={workout.tableHeaderText}>{t('workout.set')}</Text>
+          <Text className={workout.tableHeaderText}>{t('workout.reps')}</Text>
+          <Text className={workout.tableHeaderText}>{t('workout.weight')}</Text>
+          <Text className={workout.tableHeaderText}>{t('workout.completed')}</Text>
         </View>
-      ))}
 
-      <TouchableOpacity
-        onPress={() => handleAddSet(item.id)}
-        className={form.button}
-      >
-        <Text className={form.buttonText}>{t('workout.addSet')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+        {item.sets.map((setItem) => {
+          let setLabel = '';
+          if (setItem.set_type === 'normal') {
+            normalSetCounter++;
+            setLabel = `${normalSetCounter}`;
+          } else {
+            setLabel = setItem.set_type.charAt(0).toUpperCase(); // W for Warm-up, D for Dropset
+          }
+
+          return (
+            <View key={setItem.id} className={workout.setRowContainer}>
+              <TouchableOpacity
+                className={workout.setTypeButton}
+                onPress={() => handleOpenSetOptions(setItem)}
+              >
+                <Text className={workout.setTypeText}>{setLabel}</Text>
+              </TouchableOpacity>
+
+              <TextInput
+                className={workout.setInput}
+                keyboardType="numeric"
+                value={setItem.reps?.toString() || ''}
+                onChangeText={(text) => handleSetChange(setItem.id, 'reps', text ? Number(text) : null)}
+              />
+
+              <TextInput
+                className={workout.setInput}
+                keyboardType="numeric"
+                value={setItem.weight?.toString() || ''}
+                onChangeText={(text) => handleSetChange(setItem.id, 'weight', text ? Number(text) : null)}
+              />
+
+              <TouchableOpacity
+                className={workout.setCheckButton}
+                onPress={() => handleCompleteSet(setItem.id)}
+              >
+                <Feather
+                  name={setItem.completed === 1 ? "check-circle" : "circle"}
+                  size={24}
+                  color={setItem.completed === 1 ? "green" : "gray"}
+                />
+              </TouchableOpacity>
+            </View>
+          );
+        })}
+
+        <TouchableOpacity
+          onPress={() => handleAddSet(item.id)}
+          className={form.button}
+        >
+          <Text className={form.buttonText}>{t('workout.addSet')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View className={layout.container}>
@@ -218,6 +260,20 @@ export default function WorkoutID() {
           </Text>
         }
       />
+
+      {selectedSet && (
+        <BottomSheetDialog
+          isVisible={selectedSet !== null}
+          onClose={() => setSelectedSet(null)}
+        >
+          <SetOptionsContent
+            onClose={() => setSelectedSet(null)}
+            onSetTypeChange={handleSetTypeChange}
+            onDelete={() => handleRemoveSet(selectedSet.id)}
+            currentType={selectedSet.set_type}
+          />
+        </BottomSheetDialog>
+      )}
     </View>
   );
 }

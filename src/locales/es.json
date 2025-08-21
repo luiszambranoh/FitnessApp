@@ -89,7 +89,8 @@
     "weight": "Peso (Kg)",
     "addSet": "Agregar Serie",
     "addExercise": "Agregar Ejercicio",
-    "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!"
+    "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!",
+    "actions": "Acciones"
   },
   "workoutScreen": {
     "invalidId": "ID de Entrenamiento inválido.",
@@ -120,7 +121,8 @@
     "selectedExercisesTitle": "Ejercicios Seleccionados",
     "allExercisesTitle": "Todos los Ejercicios",
     "addExercisesButton_one": "Agregar {{count}} Ejercicio",
-    "addExercisesButton_other": "Agregar {{count}} Ejercicios"
+    "addExercisesButton_other": "Agregar {{count}} Ejercicios",
+    "titleRoutine": "Agregar Ejercicio a la Rutina"
   },
   "workoutList": {
     "newWorkoutButton": "Nuevo Entrenamiento",
@@ -135,7 +137,8 @@
     "yes": "Sí",
     "no": "No",
     "deleteSuccess": "¡Entrenamiento eliminado con éxito!",
-    "deleteFail": "Error al eliminar el entrenamiento."
+    "deleteFail": "Error al eliminar el entrenamiento.",
+    "createWorkoutFromRoutineError": "Error al crear el entrenamiento desde la rutina."
   },
   "editWorkout": {
     "workoutNotFound": "Entrenamiento no encontrado.",
@@ -144,5 +147,30 @@
     "updateFail": "Error al actualizar el entrenamiento.",
     "updateError": "Ocurrió un error al actualizar el entrenamiento.",
     "loading": "Cargando..."
+  },
+  "routines": {
+    "title": "Rutinas",
+    "createButton": "Crear Nueva Rutina",
+    "noRoutines": "No se encontraron rutinas.",
+    "deleteSuccess": "¡Rutina eliminada con éxito!",
+    "deleteFail": "Error al eliminar la rutina.",
+    "confirmDeleteTitle": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar esta rutina?",
+    "createTitle": "Crear Rutina",
+    "namePlaceholder": "Nombre de la Rutina",
+    "notePlaceholder": "Nota (opcional)",
+    "createSuccess": "¡Rutina creada con éxito!",
+    "createFail": "Error al crear la rutina.",
+    "validation": {
+      "nameRequired": "El nombre de la rutina es obligatorio."
+    },
+    "loadFailed": "Error al cargar los detalles de la rutina.",
+    "invalidId": "ID de rutina inválido.",
+    "addSetFailed": "Error al añadir la serie.",
+    "addSetError": "Error al añadir la serie.",
+    "updateSetFailed": "Error al actualizar la serie.",
+    "removeSetFailed": "Error al eliminar la serie.",
+    "addExercise": "Agregar Ejercicio",
+    "noExercises": "No se han añadido ejercicios a esta rutina aún."
   }
 }

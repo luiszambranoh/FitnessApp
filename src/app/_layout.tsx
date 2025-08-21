@@ -5,10 +5,18 @@ import { ThemeProvider } from "../contexts/ThemeContext";
 import { Feather } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { initDB } from "../database/setup/init";
 
 function TabLayout() {
   const { colorScheme } = useColorScheme();
   const {t} = useTranslation();
+
+  useEffect(() => {
+    async () => {
+      await initDB();
+    }
+  }, [])
 
   return (
     <Tabs

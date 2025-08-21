@@ -129,6 +129,7 @@
     "titleRoutine": "Add Exercise to Routine"
   },
   "workoutList": {
+    "title": "Workouts",
     "newWorkoutButton": "New Workout",
     "dateHeader": "Date",
     "timeHeader": "Time",
@@ -142,7 +143,10 @@
     "no": "No",
     "deleteSuccess": "Workout deleted successfully!",
     "deleteFail": "Failed to delete workout.",
-    "createWorkoutFromRoutineError": "Error creating workout from routine."
+    "createWorkoutFromRoutineError": "Error creating workout from routine.",
+    "dbInitError": "Layout DB Init Error:",
+    "deleteError": "Error deleting workout:",
+    "routinesHeader": "Routines"
   },
   "editWorkout": {
     "workoutNotFound": "Workout not found.",
@@ -175,6 +179,35 @@
     "updateSetFailed": "Failed to update set.",
     "removeSetFailed": "Failed to remove set.",
     "addExercise": "Add Exercise",
-    "noExercises": "No exercises added to this routine yet."
+    "noExercises": "No exercises added to this routine yet.",
+    "updateSuccess": "Routine updated successfully!",
+    "updateFail": "Failed to update routine."
+  },
+  "bodyData": {
+    "title": "Body Measurements",
+    "loadFail": "Failed to load body measurements.",
+    "addSuccess": "Measurement added successfully!",
+    "addFail": "Failed to add measurement.",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this measurement?",
+    "deleteSuccess": "Measurement deleted successfully!",
+    "deleteFail": "Failed to delete measurement.",
+    "date": "Date",
+    "weight": "Weight (kg)",
+    "height": "Height (cm)",
+    "neck": "Neck (cm)",
+    "shoulder": "Shoulder (cm)",
+    "arm_left": "Left Arm (cm)",
+    "arm_right": "Right Arm (cm)",
+    "forearm_left": "Left Forearm (cm)",
+    "forearm_right": "Right Forearm (cm)",
+    "chest": "Chest (cm)",
+    "waist": "Waist (cm)",
+    "thigh_left": "Left Thigh (cm)",
+    "thigh_right": "Right Thigh (cm)",
+    "calf_left": "Left Calf (cm)",
+    "calf_right": "Right Calf (cm)",
+    "addButton": "Add Measurement",
+    "noData": "No body measurements found."
   }
 }

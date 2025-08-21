@@ -70,6 +70,26 @@ export interface RoutineSetRow {
   routine_exercise_id: number;
 }
 
+export interface BodyMeasurementRow {
+  id: number;
+  date: string;
+  weight: number | null;
+  height: number | null;
+  neck: number | null;
+  shoulder: number | null;
+  arm_left: number | null;
+  arm_right: number | null;
+  forearm_left: number | null;
+  forearm_right: number | null;
+  chest: number | null;
+  waist: number | null;
+  thigh_left: number | null;
+  thigh_right: number | null;
+  calf_left: number | null;
+  calf_right: number | null;
+}
+
 export type NewRoutine = Omit<RoutineRow, 'id'>;
 export type NewRoutineExercise = Omit<RoutineExerciseRow, 'id'>;
 export type NewRoutineSet = Omit<RoutineSetRow, 'id'>;
+export type NewBodyMeasurement = Omit<BodyMeasurementRow, 'id'>;

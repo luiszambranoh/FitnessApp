@@ -60,5 +60,23 @@ export const schemaStatements = [
       note TEXT,
       routine_exercise_id INTEGER NOT NULL,
       FOREIGN KEY(routine_exercise_id) REFERENCES routine_exercises(id) ON DELETE CASCADE
+  )`,
+  `CREATE TABLE IF NOT EXISTS body_measurements (
+      id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+      date TEXT NOT NULL,
+      weight REAL,
+      height REAL,
+      neck REAL,
+      shoulder REAL,
+      arm_left REAL,
+      arm_right REAL,
+      forearm_left REAL,
+      forearm_right REAL,
+      chest REAL,
+      waist REAL,
+      thigh_left REAL,
+      thigh_right REAL,
+      calf_left REAL,
+      calf_right REAL
   )`
 ];

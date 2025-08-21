@@ -125,6 +125,7 @@
     "titleRoutine": "Agregar Ejercicio a la Rutina"
   },
   "workoutList": {
+    "title": "Entrenamientos",
     "newWorkoutButton": "Nuevo Entrenamiento",
     "dateHeader": "Fecha",
     "timeHeader": "Hora",
@@ -138,7 +139,10 @@
     "no": "No",
     "deleteSuccess": "¡Entrenamiento eliminado con éxito!",
     "deleteFail": "Error al eliminar el entrenamiento.",
-    "createWorkoutFromRoutineError": "Error al crear el entrenamiento desde la rutina."
+    "createWorkoutFromRoutineError": "Error al crear el entrenamiento desde la rutina.",
+    "dbInitError": "Error al iniciar la base de datos del layout:",
+    "deleteError": "Error al eliminar el entrenamiento:",
+    "routinesHeader": "Rutinas"
   },
   "editWorkout": {
     "workoutNotFound": "Entrenamiento no encontrado.",
@@ -171,6 +175,35 @@
     "updateSetFailed": "Error al actualizar la serie.",
     "removeSetFailed": "Error al eliminar la serie.",
     "addExercise": "Agregar Ejercicio",
-    "noExercises": "No se han añadido ejercicios a esta rutina aún."
+    "noExercises": "No se han añadido ejercicios a esta rutina aún.",
+    "updateSuccess": "¡Rutina actualizada con éxito!",
+    "updateFail": "Error al actualizar la rutina."
+  },
+  "bodyData": {
+    "title": "Medidas Corporales",
+    "loadFail": "Error al cargar las medidas corporales.",
+    "addSuccess": "¡Medida añadida con éxito!",
+    "addFail": "Error al añadir la medida.",
+    "confirmDeleteTitle": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar esta medida?",
+    "deleteSuccess": "¡Medida eliminada con éxito!",
+    "deleteFail": "Error al eliminar la medida.",
+    "date": "Fecha",
+    "weight": "Peso (kg)",
+    "height": "Altura (cm)",
+    "neck": "Cuello (cm)",
+    "shoulder": "Hombro (cm)",
+    "arm_left": "Brazo Izquierdo (cm)",
+    "arm_right": "Brazo Derecho (cm)",
+    "forearm_left": "Antebrazo Izquierdo (cm)",
+    "forearm_right": "Antebrazo Derecho (cm)",
+    "chest": "Pecho (cm)",
+    "waist": "Cintura (cm)",
+    "thigh_left": "Muslo Izquierdo (cm)",
+    "thigh_right": "Muslo Derecho (cm)",
+    "calf_left": "Pantorrilla Izquierda (cm)",
+    "calf_right": "Pantorrilla Derecha (cm)",
+    "addButton": "Añadir Medida",
+    "noData": "No se encontraron medidas corporales."
   }
 }

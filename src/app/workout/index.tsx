@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Button, View, Text, FlatList, Pressable, Alert, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, Pressable, Alert, TouchableOpacity } from "react-native";
 import { RoutineService, WorkoutService } from '../../database/database';
 import { useEffect, useState, useCallback } from "react";
 import { initDB } from "../../database/setup/init";
@@ -7,7 +7,6 @@ import { WorkoutRow, RoutineRow } from "../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
 import { layout, form, list, table } from "../../styles/theme";
 import DropdownMenu from '../../components/DropdownMenu';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function WorkoutScreen() {
@@ -26,15 +25,14 @@ export default function WorkoutScreen() {
       const fetchedRoutines = await RoutineService.getAll();
       setRoutines(fetchedRoutines);
     } catch (e) {
-      console.error("Layout DB Init Error:", e);
+      console.error(t('workoutList.dbInitError'), e);
     }
-  }, []);
+  }, [refreshKey]);
 
   useEffect(() => {
     fetchData();
+  }, [fetchData]);
 
-  }, []);
-  
   const handlePress = async () => {
     try {
       const newId = await WorkoutService.add();
@@ -59,13 +57,13 @@ export default function WorkoutScreen() {
         Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
       }
     } catch (error) {
-      console.error("Error creating workout from routine:", error);
+      console.error(t('workoutList.createWorkoutFromRoutineError'), error);
       Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
     }
   };
 
   const handleDeleteWorkout = async (id: number) => {
-    setOpenDropdownId(null); // Close dropdown
+    setOpenDropdownId(null);
     Alert.alert(
       t('workoutList.confirmDeleteTitle'),
       t('workoutList.confirmDeleteMessage'),
@@ -80,14 +78,14 @@ export default function WorkoutScreen() {
             try {
               const success = await WorkoutService.delete(id);
               if (success) {
-                Alert.alert("Success", t('workoutList.deleteSuccess'));
+                Alert.alert(t('general.success'), t('workoutList.deleteSuccess'));
                 setRefreshKey(prev => prev + 1); // Refresh the list
               } else {
-                Alert.alert("Error", t('workoutList.deleteFail'));
+                Alert.alert(t('general.error'), t('workoutList.deleteFail'));
               }
             } catch (error) {
-              console.error("Error deleting workout:", error);
-              Alert.alert("Error", t('workoutList.deleteFail'));
+              console.error(t('workoutList.deleteError'), error);
+              Alert.alert(t('general.error'), t('workoutList.deleteFail'));
             }
           },
         },
@@ -143,26 +141,32 @@ export default function WorkoutScreen() {
 
   return (
     <View className={layout.container}>
-      <Button title={t('workoutList.newWorkoutButton')} onPress={handlePress} />
-      <View className={table.headerContainer}>
-        <Text className={table.headerText}>{t('workoutList.dateHeader')}</Text>
-        <Text className={table.headerText}>{t('workoutList.timeHeader')}</Text>
-        <Text className={table.headerText}></Text>
+      <TouchableOpacity className={form.button} onPress={handlePress}>
+        <Text className={form.buttonText}>{t('workoutList.newWorkoutButton')}</Text>
+      </TouchableOpacity>
+      <View className="mt-4 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden h-56">
+        <View className={table.headerContainer}>
+          <Text className={table.headerText}>{t('workoutList.dateHeader')}</Text>
+          <Text className={table.headerText}>{t('workoutList.timeHeader')}</Text>
+          <Text className={table.headerText}></Text>
+        </View>
+        <FlatList
+          data={workouts}
+          renderItem={renderWorkoutItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
       </View>
-      <FlatList
-        data={workouts}
-        renderItem={renderWorkoutItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
 
       <View className="mt-5">
         <Text className={layout.title}>{t('workoutList.routinesHeader')}</Text>
-        <FlatList
-          data={routines}
-          renderItem={renderRoutineItem}
-          keyExtractor={(item) => item.id.toString()}
-          ListEmptyComponent={<Text className="text-gray-500 text-center mt-2">{t('routines.noRoutines')}</Text>}
-        />
+        <View className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden h-80">
+            <FlatList
+              data={routines}
+              renderItem={renderRoutineItem}
+              keyExtractor={(item) => item.id.toString()}
+              ListEmptyComponent={<Text className="text-gray-500 text-center mt-2">{t('routines.noRoutines')}</Text>}
+            />
+        </View>
       </View>
     </View>
   );

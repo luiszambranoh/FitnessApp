@@ -7,7 +7,8 @@ import {
   SupersetRow, NewSuperset,
   RoutineRow, NewRoutine,
   RoutineExerciseRow, NewRoutineExercise,
-  RoutineSetRow, NewRoutineSet
+  RoutineSetRow, NewRoutineSet,
+  BodyMeasurementRow, NewBodyMeasurement
 } from "./types/dbTypes";
 import { getCurrentDateTime } from "./utils/datetime";
 
@@ -262,5 +263,38 @@ export class RoutineService {
     }
 
     return newWorkoutId;
+  }
+}
+
+export class BodyMeasurementService {
+  static async add(measurement: NewBodyMeasurement): Promise<number | null> {
+    const query = `INSERT INTO body_measurements (date, weight, height, neck, shoulder, arm_left, arm_right, forearm_left, forearm_right, chest, waist, thigh_left, thigh_right, calf_left, calf_right) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const params = [
+      measurement.date,
+      measurement.weight,
+      measurement.height,
+      measurement.neck,
+      measurement.shoulder,
+      measurement.arm_left,
+      measurement.arm_right,
+      measurement.forearm_left,
+      measurement.forearm_right,
+      measurement.chest,
+      measurement.waist,
+      measurement.thigh_left,
+      measurement.thigh_right,
+      measurement.calf_left,
+      measurement.calf_right,
+    ];
+    return DatabaseHelper.insert(query, params);
+  }
+
+  static async getAll(): Promise<BodyMeasurementRow[]> {
+    const query = `SELECT * FROM body_measurements ORDER BY date DESC`;
+    return DatabaseHelper.query<BodyMeasurementRow>(query);
+  }
+
+  static async delete(id: number): Promise<boolean> {
+    return DatabaseHelper.removeById('body_measurements', id);
   }
 }

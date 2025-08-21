@@ -1,34 +1,39 @@
 import { router } from "expo-router";
-import { Button, View, Text, FlatList, Pressable, Alert } from "react-native";
-import { ExerciseService, SessionExerciseService, WorkoutService } from '../../database/database';
+import { Button, View, Text, FlatList, Pressable, Alert, TouchableOpacity } from "react-native";
+import { RoutineService, WorkoutService } from '../../database/database';
 import { useEffect, useState, useCallback } from "react";
 import { initDB } from "../../database/setup/init";
-import { WorkoutRow } from "../../database/types/dbTypes";
+import { WorkoutRow, RoutineRow } from "../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
 import { layout, form, list, table } from "../../styles/theme";
 import DropdownMenu from '../../components/DropdownMenu';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function WorkoutScreen() {
   const [workouts, setWorkouts] = useState<WorkoutRow[]>([]);
+  const [routines, setRoutines] = useState<RoutineRow[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [dropdownAnchor, setDropdownAnchor] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { t } = useTranslation();
 
-  const fetchWorkouts = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
       await initDB();
-      const s = await WorkoutService.getAll();
-      setWorkouts(s);
+      const fetchedWorkouts = await WorkoutService.getAll();
+      setWorkouts(fetchedWorkouts);
+      const fetchedRoutines = await RoutineService.getAll();
+      setRoutines(fetchedRoutines);
     } catch (e) {
       console.error("Layout DB Init Error:", e);
     }
   }, []);
 
   useEffect(() => {
-    fetchWorkouts();
-  }, [fetchWorkouts, refreshKey]);
+    fetchData();
+
+  }, []);
   
   const handlePress = async () => {
     try {
@@ -42,6 +47,20 @@ export default function WorkoutScreen() {
       }
     } catch (error) {
       console.error(t('workoutList.createWorkoutError'), error);
+    }
+  };
+
+  const handleCreateWorkoutFromRoutine = async (routineId: number) => {
+    try {
+      const newWorkoutId = await RoutineService.createWorkoutFromRoutine(routineId);
+      if (newWorkoutId) {
+        router.navigate(`/workout/${newWorkoutId}`);
+      } else {
+        Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
+      }
+    } catch (error) {
+      console.error("Error creating workout from routine:", error);
+      Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
     }
   };
 
@@ -82,7 +101,7 @@ export default function WorkoutScreen() {
     router.navigate(`/workout/${id}/edit`);
   };
 
-  const renderItem = ({ item }: { item: WorkoutRow }) => {
+  const renderWorkoutItem = ({ item }: { item: WorkoutRow }) => {
     const dropdownOptions = [
       { label: t('workoutList.edit'), onPress: () => handleEditWorkout(item.id) },
       { label: t('workoutList.remove'), onPress: () => handleDeleteWorkout(item.id) },
@@ -100,17 +119,6 @@ export default function WorkoutScreen() {
           <Text className={table.rowText}>{item.time}</Text>
         </Pressable>
         <View>
-          <Pressable
-            onPress={(event) => {
-              event.target.measure((x, y, width, height, pageX, pageY) => {
-                setDropdownAnchor({ x: pageX, y: pageY, width, height });
-              });
-              setOpenDropdownId(openDropdownId === item.id ? null : item.id);
-            }}
-            className="p-2 rounded-full"
-          >
-            <MaterialCommunityIcons name="dots-vertical" size={24} color="gray" />
-          </Pressable>
           {openDropdownId === item.id && dropdownAnchor && (
             <DropdownMenu
               isVisible={true}
@@ -124,6 +132,15 @@ export default function WorkoutScreen() {
     );
   };
 
+  const renderRoutineItem = ({ item }: { item: RoutineRow }) => (
+    <View className={`${list.itemContainer} justify-between`}>
+        <Text className={list.itemText}>{item.name}</Text>
+        <TouchableOpacity onPress={() => handleCreateWorkoutFromRoutine(item.id)} className="p-2">
+            <FontAwesome name="plus" size={24} color="green" />
+        </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View className={layout.container}>
       <Button title={t('workoutList.newWorkoutButton')} onPress={handlePress} />
@@ -134,9 +151,19 @@ export default function WorkoutScreen() {
       </View>
       <FlatList
         data={workouts}
-        renderItem={renderItem}
+        renderItem={renderWorkoutItem}
         keyExtractor={(item) => item.id.toString()}
       />
+
+      <View className="mt-5">
+        <Text className={layout.title}>{t('workoutList.routinesHeader')}</Text>
+        <FlatList
+          data={routines}
+          renderItem={renderRoutineItem}
+          keyExtractor={(item) => item.id.toString()}
+          ListEmptyComponent={<Text className="text-gray-500 text-center mt-2">{t('routines.noRoutines')}</Text>}
+        />
+      </View>
     </View>
   );
 }

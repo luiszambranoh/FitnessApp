@@ -46,3 +46,30 @@ export type NewWorkout = Omit<WorkoutRow, 'id'>;
 export type NewExercise = Omit<ExerciseRow, 'id'>;
 export type NewSessionExercise = Omit<SessionExerciseRow, 'id'>;
 export type NewSet = Omit<SetRow, 'id'>;
+
+export interface RoutineRow {
+  id: number;
+  name: string;
+  note: string | null;
+}
+
+export interface RoutineExerciseRow {
+  id: number;
+  note: string | null;
+  routine_id: number;
+  exercise_id: number;
+}
+
+export interface RoutineSetRow {
+  id: number;
+  set_type: SetType;
+  rest: string | null;
+  weight: number | null;
+  reps: number | null;
+  note: string | null;
+  routine_exercise_id: number;
+}
+
+export type NewRoutine = Omit<RoutineRow, 'id'>;
+export type NewRoutineExercise = Omit<RoutineExerciseRow, 'id'>;
+export type NewRoutineSet = Omit<RoutineSetRow, 'id'>;

@@ -3,6 +3,7 @@ import { getDB } from './init';
 export class DatabaseHelper {
   // Generic SELECT function
   static async query<T = any>(query: string, params: any[] = []): Promise<T[]> {
+    console.log("xsadsadqew")
     const db = getDB();
     try {
       const results = await db.getAllAsync<T>(query, params);

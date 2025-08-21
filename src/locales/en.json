@@ -24,7 +24,7 @@
     "validation": {
       "nameRequired": "Name is required.",
       "countingTypeRequired": "Counting type is required.",
-      "countingTypeInvalid": "Must be \"reps\" or \"time\"_"
+      "countingTypeInvalid": "Must be \"reps\" or \"time\""
     }
   },
   "exercises": {
@@ -47,7 +47,6 @@
     "developing": "Developing",
     "error": "Error",
     "success": "Success",
-    
     "unknownCountingType": "Unknown Counting Type"
   },
   "common": {
@@ -64,7 +63,6 @@
     "selectTime": "Select Time",
     "noSets": "No sets added yet.",
     "noExercisesInWorkout": "No exercises added to this workout yet.",
-    
     "completed": "Completed",
     "markComplete": "Mark Complete",
     "setTypePlaceholder": "Set Type",
@@ -75,10 +73,8 @@
     "addNotesPlaceholder": "Add notes here...",
     "restTimer": "Rest Timer",
     "off": "OFF",
-    
     "previous": "PREVIOUS",
     "kg": "KG",
-    
     "confirmation": "CONFIRMATION",
     "failure": "Failure",
     "warmUp": "Warm Up",
@@ -86,10 +82,11 @@
     "removeSet": "Remove Set",
     "set": "Set",
     "reps": "Reps",
-    "weight": "Weight",
+    "weight": "Weight (Kg)",
     "addSet": "Add Set",
     "addExercise": "Add Exercise",
-    "noExercisesAdded": "No exercises added yet. Click the button above to add one!"
+    "noExercisesAdded": "No exercises added yet. Click the button above to add one!",
+    "actions": "Actions"
   },
   "workoutDetails": {
     "invalidWorkoutId": "Invalid Workout ID.",
@@ -128,7 +125,8 @@
     "selectedExercisesTitle": "Selected Exercises",
     "allExercisesTitle": "All Exercises",
     "addExercisesButton_one": "Add {{count}} Exercise",
-    "addExercisesButton_other": "Add {{count}} Exercises"
+    "addExercisesButton_other": "Add {{count}} Exercises",
+    "titleRoutine": "Add Exercise to Routine"
   },
   "workoutList": {
     "newWorkoutButton": "New Workout",
@@ -143,7 +141,8 @@
     "yes": "Yes",
     "no": "No",
     "deleteSuccess": "Workout deleted successfully!",
-    "deleteFail": "Failed to delete workout."
+    "deleteFail": "Failed to delete workout.",
+    "createWorkoutFromRoutineError": "Error creating workout from routine."
   },
   "editWorkout": {
     "workoutNotFound": "Workout not found.",
@@ -152,5 +151,30 @@
     "updateFail": "Failed to update workout.",
     "updateError": "An error occurred while updating the workout.",
     "loading": "Loading..."
+  },
+  "routines": {
+    "title": "Routines",
+    "createButton": "Create New Routine",
+    "noRoutines": "No routines found.",
+    "deleteSuccess": "Routine deleted successfully!",
+    "deleteFail": "Failed to delete routine.",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this routine?",
+    "createTitle": "Create Routine",
+    "namePlaceholder": "Routine Name",
+    "notePlaceholder": "Note (optional)",
+    "createSuccess": "Routine created successfully!",
+    "createFail": "Failed to create routine.",
+    "validation": {
+      "nameRequired": "Routine name is required."
+    },
+    "loadFailed": "Failed to load routine details.",
+    "invalidId": "Invalid Routine ID.",
+    "addSetFailed": "Failed to add set.",
+    "addSetError": "Error adding set.",
+    "updateSetFailed": "Failed to update set.",
+    "removeSetFailed": "Failed to remove set.",
+    "addExercise": "Add Exercise",
+    "noExercises": "No exercises added to this routine yet."
   }
 }

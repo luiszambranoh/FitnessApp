@@ -37,5 +37,28 @@ export const schemaStatements = [
       note TEXT,
       session_exercise_id INTEGER NOT NULL,
       FOREIGN KEY(session_exercise_id) REFERENCES session_exercises(id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS routines (
+      id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+      name TEXT NOT NULL,
+      note TEXT
+  )`,
+  `CREATE TABLE IF NOT EXISTS routine_exercises (
+      id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+      note TEXT,
+      routine_id INTEGER NOT NULL,
+      exercise_id INTEGER NOT NULL,
+      FOREIGN KEY(routine_id) REFERENCES routines(id) ON DELETE CASCADE,
+      FOREIGN KEY(exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
+  )`,
+  `CREATE TABLE IF NOT EXISTS routine_sets (
+      id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+      set_type INTEGER,
+      rest TEXT,
+      weight REAL,
+      reps INTEGER,
+      note TEXT,
+      routine_exercise_id INTEGER NOT NULL,
+      FOREIGN KEY(routine_exercise_id) REFERENCES routine_exercises(id) ON DELETE CASCADE
   )`
 ];

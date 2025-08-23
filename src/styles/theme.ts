@@ -3,17 +3,24 @@
  * Organized by component category for maintainability.
  */
 
+export const colors = {
+  placeholder: {
+    light: '#9CA3AF',
+    dark: '#bfbfbf',
+  },
+};
+
 export const layout = {
   container: "flex-1 p-5 bg-gray-100 dark:bg-gray-900",
   title: "text-2xl font-bold text-center mb-5 text-gray-900 dark:text-gray-100",
 };
 
 export const form = {
-  textInput: "border p-3 mb-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-white",
+  textInput: "border p-3 mb-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600",
   button: "bg-blue-600 p-4 mt-4 rounded-lg items-center",
   buttonText: "text-white font-bold text-base",
   errorText: "text-red-500 mb-2 ml-1",
-  setInput: "border border-gray-300 dark:border-gray-600 p-2 rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray-700 w-1/4 mr-1 placeholder-gray-500 dark:placeholder-white",
+  setInput: "border border-gray-300 dark:border-gray-600 p-2 rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray w-1/4 mr-1 dark:placeholder-gray-500",
 };
 
 export const list = {

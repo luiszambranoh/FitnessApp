@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, Alert, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { layout, form, table } from '../../styles/theme';
+import { layout, form, table, colors } from '../../styles/theme';
 import { BodyMeasurementService } from '../../database/database';
 import { BodyMeasurementRow, NewBodyMeasurement } from '../../database/types/dbTypes';
 import { FontAwesome } from '@expo/vector-icons';
 import { getCurrentDateTime } from '../../database/utils/datetime';
+import { useColorScheme } from 'nativewind';
 
 const initialFormState: NewBodyMeasurement = {
     date: getCurrentDateTime().date,
@@ -27,6 +28,7 @@ const initialFormState: NewBodyMeasurement = {
 
 export default function BodyDataScreen() {
   const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
   const [measurements, setMeasurements] = useState<BodyMeasurementRow[]>([]);
   const [formState, setFormState] = useState<NewBodyMeasurement>(initialFormState);
 
@@ -137,6 +139,8 @@ export default function BodyDataScreen() {
     </View>
   );
 
+  const placeholderTextColor = colors.placeholder[colorScheme === 'dark' ? 'dark' : 'light'];
+
   return (
     <View className={layout.container}>
         <Text className={layout.title}>{t('bodyData.title')}</Text>
@@ -149,6 +153,7 @@ export default function BodyDataScreen() {
                             key={key}
                             className={`${form.textInput} w-1/2 pr-2`}
                             placeholder={t(`bodyData.${key}`)}
+                            placeholderTextColor={placeholderTextColor}
                             keyboardType="numeric"
                             value={formState[key as keyof NewBodyMeasurement] ? formState[key as keyof NewBodyMeasurement]!.toString() : ''}
                             onChangeText={(value) => handleInputChange(key as keyof NewBodyMeasurement, value)}

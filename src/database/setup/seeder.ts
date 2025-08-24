@@ -5,7 +5,6 @@ const exercisesData = require('../../../data/exercises.json');
 export const seedDefaultExercises = async () => {
   try {
     console.log(exercisesData);
-
     for (const exercise of exercisesData) {
       await ExerciseService.add(exercise);
     }

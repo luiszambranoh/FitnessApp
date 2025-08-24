@@ -1,10 +1,15 @@
-import { getDB } from './init';
+import { type SQLiteDatabase } from 'expo-sqlite';
 
 export class DatabaseHelper {
+  private static db: SQLiteDatabase;
+
+  static initialize(database: SQLiteDatabase) {
+    this.db = database;
+  }
+
   // Generic SELECT function
   static async query<T = any>(query: string, params: any[] = []): Promise<T[]> {
-    console.log("xsadsadqew")
-    const db = getDB();
+    const db = this.db;
     try {
       const results = await db.getAllAsync<T>(query, params);
       console.log(`✅ [SELECT] Query successful! Rows fetched: ${results.length} 📝`);
@@ -17,7 +22,7 @@ export class DatabaseHelper {
 
   // Generic INSERT function
   static async insert(query: string, params: any[] = []): Promise<number | null> {
-    const db = getDB();
+    const db = this.db;
     try {
       const result = await db.runAsync(query, params);
       const id = result?.lastInsertRowId ?? null;
@@ -31,7 +36,7 @@ export class DatabaseHelper {
 
   // Generic UPDATE function
   static async update(query: string, params: any[] = []): Promise<boolean> {
-    const db = getDB();
+    const db = this.db;
     try {
       const result = await db.runAsync(query, params);
       console.log(`✅ [UPDATE] Update successful! Changes: ${result?.changes ?? 0} 🔄`);
@@ -44,7 +49,7 @@ export class DatabaseHelper {
 
   // Generic DELETE by id
   static async removeById(table: string, id: number): Promise<boolean> {
-    const db = getDB();
+    const db = this.db;
     const query = `DELETE FROM ${table} WHERE id = ?`;
     try {
       const result = await db.runAsync(query, [id]);

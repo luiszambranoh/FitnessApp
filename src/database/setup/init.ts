@@ -1,30 +1,28 @@
 import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
 import { schemaStatements } from './schema';
+import { preferencesService } from '../../services/preferencesService';
+import { seedDefaultExercises } from './seeder';
+import { DatabaseHelper } from './queryRunner';
 
 export let db: SQLite.SQLiteDatabase;
 
-const deleteOldDB = async () => {
-  const sqliteDir = FileSystem.documentDirectory + 'SQLite';
-  await FileSystem.makeDirectoryAsync(sqliteDir, { intermediates: true });
-  await FileSystem.deleteAsync(`${sqliteDir}/fitness.db`, { idempotent: true });
-};
-
 export const initDB = async () => {
-  console.log("yes")
+  
   try {
     db = await SQLite.openDatabaseAsync('fitness.db');
+    DatabaseHelper.initialize(db);
+    let preferences = (await preferencesService.read());
     for (const sql of schemaStatements) {
       await db.execAsync(sql);
+    }
+    if (!preferences.exercisesAdded){
+      seedDefaultExercises();
+      preferencesService.write({...preferences, exercisesAdded: true});
+      console.log("Initial exercises added")
     }
     console.log('✅ Database initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize DB:', error);
     throw error;
   }
-};
-
-export const getDB = (): SQLite.SQLiteDatabase => {
-  if (!db) throw new Error('Database not initialized');
-  return db;
 };

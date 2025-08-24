@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fitnessapp",
-    "slug": "fitnessapp",
+    "name": "Fitness App",
+    "slug": "fitness-app",
     "version": "1.0.0",
     "scheme": "your-app-scheme",
     "orientation": "portrait",
@@ -18,6 +18,8 @@
     },
     "android": {
       "adaptiveIcon": {
+        "enableFTS": false,
+        "useSQLCipher": false,
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
@@ -29,13 +31,23 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-sqlite",
+      [
+        "expo-sqlite",
+        {
+            "enableFTS": true,
+            "useSQLCipher": true,
+            "android": {
+              "enableFTS": false,
+              "useSQLCipher": false
+            }
+          }
+      ],
       "expo-router"
     ],
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "32605213-80ad-4d5c-b0b2-2b82002a6fa7"
+        "projectId": "a1560a8a-5aa6-475a-92b5-427caa16bfe9"
       }
     }
   }

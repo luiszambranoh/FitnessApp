@@ -68,6 +68,76 @@ export class ExerciseService {
   static async delete(id: number): Promise<boolean> {
     return DatabaseHelper.removeById('exercises', id);
   }
+
+  static async getExerciseSets(exerciseId: number): Promise<SetRow[]> {
+    const query = `
+      SELECT s.* FROM sets s
+      JOIN session_exercises se ON s.session_exercise_id = se.id
+      WHERE se.exercise_id = ? AND s.completed = 1
+      ORDER BY s.id DESC
+    `;
+    return DatabaseHelper.query<SetRow>(query, [exerciseId]);
+  }
+
+  static async getBestSets(exerciseId: number): Promise<SetRow[]> {
+    const query = `
+      SELECT s.*, w.date FROM sets s
+      JOIN session_exercises se ON s.session_exercise_id = se.id
+      JOIN workouts w ON se.session_id = w.id
+      WHERE se.exercise_id = ? AND s.completed = 1 AND s.weight IS NOT NULL AND s.reps IS NOT NULL
+      ORDER BY s.weight DESC, s.reps DESC
+      LIMIT 3
+    `;
+    return DatabaseHelper.query<SetRow>(query, [exerciseId]);
+  }
+
+  static async getExerciseVolumePerWeek(exerciseId: number): Promise<{ week: string, volume: number }[]> {
+    const query = `
+      SELECT
+        STRFTIME('%Y-%W', w.date) AS week,
+        SUM(s.weight * s.reps) AS volume
+      FROM sets s
+      JOIN session_exercises se ON s.session_exercise_id = se.id
+      JOIN workouts w ON se.session_id = w.id
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.reps IS NOT NULL AND s.completed = 1
+      GROUP BY week
+      ORDER BY week ASC
+    `;
+    return DatabaseHelper.query<{ week: string, volume: number }>(query, [exerciseId]);
+  }
+
+  static async getExercisePR(exerciseId: number): Promise<number | null> {
+    const query = `
+      SELECT MAX(s.weight) AS pr
+      FROM sets s
+      JOIN session_exercises se ON s.session_exercise_id = se.id
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1
+    `;
+    const results = await DatabaseHelper.query<{ pr: number }>(query, [exerciseId]);
+    return results[0]?.pr ?? null;
+  }
+
+  static async getExerciseAverageSetsAndWeight(exerciseId: number): Promise<{ averageSets: number, averageWeight: number } | null> {
+    const query = `
+      SELECT
+        COUNT(s.id) AS totalSets,
+        SUM(s.weight) AS totalWeight,
+        COUNT(DISTINCT se.session_id) AS totalSessions
+      FROM sets s
+      JOIN session_exercises se ON s.session_exercise_id = se.id
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1
+    `;
+    const results = await DatabaseHelper.query<{ totalSets: number, totalWeight: number, totalSessions: number }>(query, [exerciseId]);
+
+    if (results[0] && results[0].totalSets > 0) {
+      const { totalSets, totalWeight, totalSessions } = results[0];
+      const averageSets = totalSessions > 0 ? totalSets / totalSessions : 0;
+      const averageWeight = totalWeight / totalSets;
+      return { averageSets, averageWeight };
+    } else {
+      return null;
+    }
+  }
 }
 
 export class SessionExerciseService {
@@ -153,6 +223,33 @@ export class SupersetService {
 
   static async delete(id: number): Promise<boolean> {
     return DatabaseHelper.removeById('supersets', id);
+  }
+
+  // Get supersets for a specific workout
+  static async getByWorkoutId(workoutId: number): Promise<SupersetRow[]> {
+    const query = `
+      SELECT DISTINCT s.* 
+      FROM supersets s
+      JOIN session_exercises se ON s.id = se.superset_id
+      WHERE se.session_id = ?
+      ORDER BY s.number ASC
+    `;
+    return DatabaseHelper.query<SupersetRow>(query, [workoutId]);
+  }
+
+  // Create superset with auto-generated number
+  static async createWithAutoNumber(workoutId: number, note: string): Promise<number | null> {
+    // Get the highest number for this workout's supersets
+    const query = `
+      SELECT MAX(s.number) as max_number 
+      FROM supersets s
+      JOIN session_exercises se ON s.id = se.superset_id
+      WHERE se.session_id = ?
+    `;
+    const results = await DatabaseHelper.query<{max_number: number | null}>(query, [workoutId]);
+    const nextNumber = (results[0]?.max_number || 0) + 1;
+    
+    return this.add({ number: nextNumber, note });
   }
 }
 

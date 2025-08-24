@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { Link, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { layout, form } from '../../styles/theme';
 import { ExerciseService } from '../../database/database';
@@ -10,13 +10,17 @@ import { useCrud } from '../../hooks/useCrud';
 
 export default function ExercisesScreen() {
   const { t } = useTranslation();
-  const { items: exercises } = useCrud(ExerciseService);
+  const router = useRouter();
+  const { data: exercises } = useCrud(ExerciseService);
 
+  const handleSelectExercise = (exerciseId: number) => {
+    router.push(`/profile/exercises/${exerciseId}`);
+  };
   const renderExerciseItem = ({ item }: { item: ExerciseRow }) => (
     <ExerciseCard
       exercise={item}
       isSelected={false}
-      onSelect={() => {}}
+      onSelect={() => handleSelectExercise(item.id)}
     />
   );
 

@@ -32,7 +32,11 @@
   "exercises": {
     "title": "Exercises",
     "createButton": "Create New Exercise",
-    "noExercises": "No exercises found."
+    "noExercises": "No exercises found.",
+    "confirmDeleteTitle": "Confirm Deletion",
+    "confirmDeleteMessage": "Are you sure you want to delete this exercise?",
+    "deleteSuccess": "Exercise deleted successfully!",
+    "deleteFail": "Failed to delete exercise."
   },
   "theme": {
     "prompt": "Select your preferred application theme.",
@@ -49,10 +53,24 @@
     "developing": "Developing",
     "error": "Error",
     "success": "Success",
-    "unknownCountingType": "Unknown Counting Type"
+    "unknownCountingType": "Unknown Counting Type",
+    "noData": "N/A"
+  },
+  "exerciseDetails": {
+    "loadError": "Failed to load exercise details.",
+    "notFound": "Exercise not found.",
+    "volumePerWeek": "Volume Per Week",
+    "noVolumeData": "No volume data available for this exercise.",
+    "allTimePR": "All-Time PR",
+    "averageSets": "Average Sets",
+    "averageWeight": "Average Weight",
+    "bestSets": "Best Sets",
+    "noBestSets": "No best sets found for this exercise."
   },
   "common": {
-    "unknownExercise": "Unknown Exercise"
+    "unknownExercise": "Unknown Exercise",
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "workout": {
     "title": "Workout",
@@ -215,6 +233,7 @@
   "database": {
     "exportButton": "Export Database",
     "importButton": "Import Database",
+    "deleteButton": "Delete Database",
     "exportSuccessTitle": "Export Successful",
     "exportSuccessMessage": "The database has been exported successfully.",
     "exportErrorTitle": "Export Error",
@@ -222,6 +241,40 @@
     "importSuccessTitle": "Import Successful",
     "importSuccessMessage": "The database has been imported successfully. Please restart the app.",
     "importErrorTitle": "Import Error",
-    "importErrorMessage": "An error occurred while importing the database."
-  }
+    "importErrorMessage": "An error occurred while importing the database.",
+    "deleteConfirmTitle": "Delete Database",
+    "deleteConfirmMessage": "Are you sure you want to delete the entire database? This action cannot be undone. The app will recreate the database with default exercises on next startup.",
+    "deleteSuccessTitle": "Database Deleted",
+    "deleteSuccessMessage": "The database has been deleted successfully. Default exercises will be added when you restart the app.",
+    "deleteErrorTitle": "Delete Error",
+    "deleteErrorMessage": "An error occurred while deleting the database."
+  },
+  "superset": {
+      "manageTitle": "Manage Superset",
+      "createNewSuperset": "Create New Superset",
+      "supersetNamePlaceholder": "Superset name (e.g., Push)",
+      "create": "Create",
+      "existingSupersets": "Existing Supersets",
+      "noExistingSupersets": "No supersets created yet. Create one above.",
+      "supersetNumber": "Superset {{number}}",
+      "currentlyInSuperset": "This exercise is currently in a superset",
+      "removeFromSuperset": "Remove from Superset",
+      "addToSuperset": "Add to Superset",
+      "deleteExercise": "Delete Exercise",
+      "confirmDeleteExercise": "Are you sure you want to delete this exercise from the workout?",
+      "fetchError": "Failed to load supersets",
+      "createError": "Failed to create superset",
+      "validation": {
+        "nameRequired": "Superset name is required"
+      },
+      "exerciseAlreadyExists": "This exercise is already added to this workout"
+    },
+    "setOptions": {
+      "title": "Set Options",
+      "normalSet": "Normal Set",
+      "warmUpSet": "Warm-up Set",
+      "dropSet": "Dropset",
+      "deleteSet": "Delete Set",
+      "cancel": "Cancel"
+    }
 }

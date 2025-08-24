@@ -39,6 +39,8 @@ export default function RoutineIdScreen() {
   const [routine, setRoutine] = useState<RoutineRow | null>(null);
   const [routineExercises, setRoutineExercises] = useState<FullRoutineExercise[]>([]);
   const [selectedSet, setSelectedSet] = useState<RoutineSetRow | null>(null);
+  const [groupedExercises, setGroupedExercises] = useState<{exercises: FullRoutineExercise[]}[]>([]);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
   const routineIdNum = Number(routine_id);
 
   const fetchRoutineDetails = useCallback(async () => {
@@ -56,6 +58,10 @@ export default function RoutineIdScreen() {
         })
       );
       setRoutineExercises(fullRoutineExercises);
+      
+      // Group exercises (for now just individual groups, can be enhanced for routine supersets later)
+      const grouped = fullRoutineExercises.map(exercise => ({ exercises: [exercise] }));
+      setGroupedExercises(grouped);
     } catch (error) {
       console.error("Error fetching routine details:", error);
       Alert.alert(t('general.error'), t('routines.loadFailed'));
@@ -156,14 +162,47 @@ export default function RoutineIdScreen() {
     setSelectedSet(set);
   };
 
-  const renderExerciseBlock = ({ item }: { item: FullRoutineExercise }) => {
+  const handleDeleteExercise = async (routineExerciseId: number) => {
+    Alert.alert(
+      t('superset.deleteExercise'),
+      t('superset.confirmDeleteExercise'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await RoutineService.removeExercise(routineExerciseId);
+              fetchRoutineDetails();
+            } catch (error) {
+              console.error('Error deleting exercise:', error);
+              Alert.alert(t('general.error'), 'Failed to delete exercise');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const renderExerciseBlock = (item: FullRoutineExercise) => {
     let normalSetCounter = 0;
 
     return (
       <View className={workout.exerciseBlockContainer}>
-        <Text className={workout.exerciseName}>
-          {item.exerciseDetails?.name || t('general.unknownExercise')}
-        </Text>
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className={workout.exerciseName}>
+            {item.exerciseDetails?.name || t('general.unknownExercise')}
+          </Text>
+          <View className="flex-row">
+            <TouchableOpacity
+              className="bg-red-500 p-2 rounded"
+              onPress={() => handleDeleteExercise(item.id)}
+            >
+              <Feather name="trash-2" size={16} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <View className={workout.tableHeaderContainer}>
           <Text className={workout.tableHeaderText}>{t('workout.set')}</Text>
@@ -224,6 +263,14 @@ export default function RoutineIdScreen() {
     );
   };
 
+  const renderGroupedExercises = ({ item }: { item: {exercises: FullRoutineExercise[]} }) => {
+    return (
+      <View className="mb-4">
+        {renderExerciseBlock(item.exercises[0])}
+      </View>
+    );
+  };
+
   return (
     <View className={layout.container}>
         <Text className={layout.title}>{routine?.name}</Text>
@@ -235,9 +282,9 @@ export default function RoutineIdScreen() {
       </TouchableOpacity>
 
       <FlatList
-        data={routineExercises}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderExerciseBlock}
+        data={groupedExercises}
+        keyExtractor={(item) => `exercise-${item.exercises[0].id}`}
+        renderItem={renderGroupedExercises}
         ListEmptyComponent={
           <Text className={workout.noExercisesText}>
             {t('routines.noExercises')}

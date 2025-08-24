@@ -149,15 +149,18 @@ export default function BodyDataScreen() {
                 {Object.keys(initialFormState).map((key) => {
                     if (key === 'date') return null;
                     return (
-                        <TextInput
-                            key={key}
-                            className={`${form.textInput} w-1/2 pr-2`}
-                            placeholder={t(`bodyData.${key}`)}
-                            placeholderTextColor={placeholderTextColor}
-                            keyboardType="numeric"
-                            value={formState[key as keyof NewBodyMeasurement] ? formState[key as keyof NewBodyMeasurement]!.toString() : ''}
-                            onChangeText={(value) => handleInputChange(key as keyof NewBodyMeasurement, value)}
-                        />
+                        <View className="flex-row items-center w-1/2 pr-2">
+                            <TextInput
+                                key={key}
+                                className={`${form.textInput} flex-1`}
+                                placeholder={t(`bodyData.${key}`)}
+                                placeholderTextColor={placeholderTextColor}
+                                keyboardType="numeric"
+                                value={formState[key as keyof NewBodyMeasurement] ? formState[key as keyof NewBodyMeasurement]!.toString() : ''}
+                                onChangeText={(value) => handleInputChange(key as keyof NewBodyMeasurement, value)}
+                            />
+                            {key === 'weight' && <Text className="ml-2 text-gray-900 dark:text-gray-200">kg</Text>}
+                        </View>
                     )
                 })}
             </View>

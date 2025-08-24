@@ -32,7 +32,11 @@
   "exercises": {
     "title": "Ejercicios",
     "createButton": "Crear Nuevo Ejercicio",
-    "noExercises": "No se encontraron ejercicios."
+    "noExercises": "No se encontraron ejercicios.",
+    "confirmDeleteTitle": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar este ejercicio?",
+    "deleteSuccess": "¡Ejercicio eliminado con éxito!",
+    "deleteFail": "Error al eliminar el ejercicio."
   },
   "theme": {
     "prompt": "Selecciona el tema que prefieras para la aplicación.",
@@ -50,10 +54,24 @@
     "error": "Error",
     "success": "Éxito",
     
-    "unknownCountingType": "Tipo de Conteo Desconocido"
+    "unknownCountingType": "Tipo de Conteo Desconocido",
+    "noData": "N/D"
+  },
+  "exerciseDetails": {
+    "loadError": "Error al cargar los detalles del ejercicio.",
+    "notFound": "Ejercicio no encontrado.",
+    "volumePerWeek": "Volumen por Semana",
+    "noVolumeData": "No hay datos de volumen disponibles para este ejercicio.",
+    "allTimePR": "PR Histórico",
+    "averageSets": "Series Promedio",
+    "averageWeight": "Peso Promedio",
+    "bestSets": "Mejores Series",
+    "noBestSets": "No se encontraron mejores series para este ejercicio."
   },
   "common": {
-    "unknownExercise": "Ejercicio Desconocido"
+    "unknownExercise": "Ejercicio Desconocido",
+    "cancel": "Cancelar",
+    "delete": "Eliminar"
   },
   "workout": {
     "title": "Entrenamiento",
@@ -211,6 +229,7 @@
   "database": {
     "exportButton": "Exportar Base de Datos",
     "importButton": "Importar Base de Datos",
+    "deleteButton": "Eliminar Base de Datos",
     "exportSuccessTitle": "Exportación Exitosa",
     "exportSuccessMessage": "La base de datos ha sido exportada exitosamente.",
     "exportErrorTitle": "Error de Exportación",
@@ -218,6 +237,40 @@
     "importSuccessTitle": "Importación Exitosa",
     "importSuccessMessage": "La base de datos ha sido importada exitosamente. Por favor, reinicia la aplicación.",
     "importErrorTitle": "Error de Importación",
-    "importErrorMessage": "Ocurrió un error al importar la base de datos."
-  }
+    "importErrorMessage": "Ocurrió un error al importar la base de datos.",
+    "deleteConfirmTitle": "Eliminar Base de Datos",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar toda la base de datos? Esta acción no se puede deshacer. La aplicación recreará la base de datos con ejercicios predeterminados en el próximo inicio.",
+    "deleteSuccessTitle": "Base de Datos Eliminada",
+    "deleteSuccessMessage": "La base de datos ha sido eliminada exitosamente. Los ejercicios predeterminados se añadirán cuando reinicies la aplicación.",
+    "deleteErrorTitle": "Error al Eliminar",
+    "deleteErrorMessage": "Ocurrió un error al eliminar la base de datos."
+  },
+  "superset": {
+      "manageTitle": "Gestionar Superserie",
+      "createNewSuperset": "Crear Nueva Superserie",
+      "supersetNamePlaceholder": "Nombre de superserie (ej. Empuje)",
+      "create": "Crear",
+      "existingSupersets": "Superseries Existentes",
+      "noExistingSupersets": "No se han creado superseries aún. Crea una arriba.",
+      "supersetNumber": "Superserie {{number}}",
+      "currentlyInSuperset": "Este ejercicio está actualmente en una superserie",
+      "removeFromSuperset": "Remover de Superserie",
+      "addToSuperset": "Añadir a Superserie",
+      "deleteExercise": "Eliminar Ejercicio",
+      "confirmDeleteExercise": "¿Estás seguro de que quieres eliminar este ejercicio del entrenamiento?",
+      "fetchError": "Error al cargar superseries",
+      "createError": "Error al crear superserie",
+      "validation": {
+        "nameRequired": "El nombre de la superserie es obligatorio"
+      },
+      "exerciseAlreadyExists": "Este ejercicio ya está agregado a este entrenamiento"
+    },
+    "setOptions": {
+      "title": "Opciones de Serie",
+      "normalSet": "Serie Normal",
+      "warmUpSet": "Serie de Calentamiento",
+      "dropSet": "Dropset",
+      "deleteSet": "Eliminar Serie",
+      "cancel": "Cancelar"
+    }
 }

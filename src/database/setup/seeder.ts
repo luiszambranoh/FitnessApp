@@ -14,7 +14,7 @@ export const seedDefaultExercises = async () => {
     for (const exercise of exercisesData) {
       console.log(`➕ Adding exercise: ${exercise.name}`);
       const query = `INSERT INTO exercises (name, counting_type, note, active) VALUES (?, ?, ?, ?)`;
-      const params = [exercise.name, exercise.couting_type, exercise.note, exercise.active];
+      const params = [exercise.name, exercise.counting_type, exercise.note, exercise.active];
       const result = await db.runAsync(query, params);
       console.log(`✅ Added exercise with ID: ${result.lastInsertRowId}`);
     }

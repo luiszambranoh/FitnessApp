@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { ExerciseService } from "../../database/database";
-import { NewExercise } from "../../database/types/dbTypes";
-import { form, layout } from "../../styles/theme";
+import { ExerciseService } from "../../../database/database";
+import { NewExercise } from "../../../database/types/dbTypes";
+import { form, layout } from "../../../styles/theme";
 
 export default function CreateExercise() {
   const { t } = useTranslation();
@@ -40,8 +40,6 @@ export default function CreateExercise() {
 
   return (
     <View className={layout.container}>
-      <Text className={layout.title}>{t('createExercise.title')}</Text>
-
       <Controller
         control={control}
         rules={{ required: t('createExercise.validation.nameRequired') }}
@@ -61,28 +59,6 @@ export default function CreateExercise() {
 
       <Controller
         control={control}
-        rules={{
-          required: t('createExercise.validation.countingTypeRequired'),
-          validate: value => 
-            ["reps", "time"].includes(value) || t('createExercise.validation.countingTypeInvalid')
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            className={form.textInput}
-            placeholder={t('createExercise.countingTypePlaceholder')}
-            placeholderTextColor="#9CA3AF"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-          />
-        )}
-        name="couting_type"
-      />
-      {errors.couting_type && <Text className={form.errorText}>{errors.couting_type.message}</Text>}
-
-      <Controller
-        control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             className={form.textInput}
@@ -94,22 +70,6 @@ export default function CreateExercise() {
           />
         )}
         name="note"
-      />
-
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            className={form.textInput}
-            placeholder={t('createExercise.activePlaceholder')}
-            placeholderTextColor="#9CA3AF"
-            keyboardType="numeric"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={String(value)}
-          />
-        )}
-        name="active"
       />
 
       <TouchableOpacity onPress={handleSubmit(onSubmit)} className={form.button}>

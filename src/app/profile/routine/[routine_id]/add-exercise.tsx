@@ -17,14 +17,23 @@ export default function AddExerciseToRoutine() {
     const fetchExercises = async () => {
       try {
         const fetchedExercises = await ExerciseService.getAll();
-        setAllExercises(fetchedExercises);
+        
+        // Get already added exercises to filter them out
+        if (routine_id) {
+          const routineExercises = await RoutineService.getExercisesByRoutineId(Number(routine_id));
+          const addedExerciseIds = new Set(routineExercises.map(re => re.exercise_id));
+          const availableExercises = fetchedExercises.filter(ex => !addedExerciseIds.has(ex.id));
+          setAllExercises(availableExercises);
+        } else {
+          setAllExercises(fetchedExercises);
+        }
       } catch (error) {
         console.error("Error fetching exercises:", error);
         Alert.alert(t('general.error'), "Failed to load exercises.");
       }
     };
     fetchExercises();
-  }, []);
+  }, [routine_id]);
 
   const toggleExerciseSelection = (exerciseId: number) => {
     setSelectedExerciseIds((prevSelectedIds) => {

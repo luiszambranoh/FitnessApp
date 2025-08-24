@@ -13,6 +13,7 @@ export const colors = {
 export const layout = {
   container: "flex-1 p-5 bg-gray-100 dark:bg-gray-900",
   title: "text-2xl font-bold text-center mb-5 text-gray-900 dark:text-gray-100",
+  sectionContainer: "mt-4",
 };
 
 export const form = {
@@ -32,6 +33,10 @@ export const list = {
   sessionExerciseNote: "text-sm italic text-gray-700 dark:text-gray-300 mb-2",
   noSetsText: "text-center text-gray-500 dark:text-gray-400 mt-2",
   noSessionExercisesText: "text-center text-gray-500 dark:text-gray-400 mt-4 text-base",
+};
+
+export const text = {
+  sectionTitle: "text-lg font-bold text-gray-900 dark:text-gray-100 mb-2",
 };
 
 export const dropdown = {

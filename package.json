@@ -26,6 +26,7 @@
     "react-hook-form": "^7.62.0",
     "react-i18next": "^15.6.1",
     "react-native": "0.79.5",
+    "react-native-element-dropdown": "^2.12.4",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",

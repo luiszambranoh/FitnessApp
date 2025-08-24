@@ -1,596 +1,81 @@
 [
   {
-    "name": "Push-ups",
-    "couting_type": "reps",
-    "note": "Bodyweight exercise for chest, shoulders, and triceps.",
+    "name": "Sentadilla con barra",
+    "counting_type": "reps",
+    "note": "Ejercicio fundamental para piernas y glúteos.",
     "active": 1
   },
   {
-    "name": "Squats",
-    "couting_type": "reps",
-    "note": "Bodyweight exercise for legs and glutes.",
+    "name": "Press de banca",
+    "counting_type": "reps",
+    "note": "Ejercicio clave para el pecho, hombros y tríceps.",
     "active": 1
   },
   {
-    "name": "Plank",
-    "couting_type": "time",
-    "note": "Core strengthening exercise, hold the position.",
+    "name": "Peso muerto",
+    "counting_type": "reps",
+    "note": "Trabaja la espalda, glúteos, isquiotibiales y core. Usa una técnica adecuada.",
     "active": 1
   },
   {
-    "name": "Bicep Curls",
-    "couting_type": "reps",
-    "note": "Dumbbell or barbell exercise for biceps.",
+    "name": "Dominadas",
+    "counting_type": "reps",
+    "note": "Ejercicio para la espalda y bíceps. Si es difícil, usa una banda de resistencia.",
     "active": 1
   },
   {
-    "name": "Lunges",
-    "couting_type": "reps",
-    "note": "Targets quads, glutes, and hamstrings.",
+    "name": "Press de hombros con mancuernas",
+    "counting_type": "reps",
+    "note": "Fortalece los hombros y la parte superior del cuerpo.",
     "active": 1
   },
   {
-    "name": "Jumping Jacks",
-    "couting_type": "time",
-    "note": "Full body cardio exercise.",
+    "name": "Remo con mancuernas",
+    "counting_type": "reps",
+    "note": "Aísla la espalda alta y los dorsales.",
     "active": 1
   },
   {
-    "name": "Crunches",
-    "couting_type": "reps",
-    "note": "Abdominal exercise targeting the upper abs.",
+    "name": "Curl de bíceps con barra Z",
+    "counting_type": "reps",
+    "note": "Aísla y fortalece los bíceps.",
     "active": 1
   },
+
   {
-    "name": "Dumbbell Bench Press",
-    "couting_type": "reps",
-    "note": "Chest exercise using dumbbells.",
+    "name": "Plancha",
+    "counting_type": "time",
+    "note": "Fortalece el core, la espalda baja y los abdominales.",
     "active": 1
   },
   {
-    "name": "Pull-ups",
-    "couting_type": "reps",
-    "note": "Bodyweight exercise for back and biceps.",
+    "name": "Flexiones de brazos",
+    "counting_type": "reps",
+    "note": "Ejercicio de peso corporal para pecho, hombros y tríceps.",
     "active": 1
   },
   {
-    "name": "Deadlifts",
-    "couting_type": "reps",
-    "note": "Compound lift for posterior chain: back, glutes, hamstrings.",
+    "name": "Hip thrust con barra",
+    "counting_type": "reps",
+    "note": "Uno de los mejores ejercicios para glúteos.",
     "active": 1
   },
   {
-    "name": "Overhead Press",
-    "couting_type": "reps",
-    "note": "Shoulder exercise using a barbell or dumbbells.",
+    "name": "Remo en máquina",
+    "counting_type": "reps",
+    "note": "Ideal para la espalda, con un enfoque en los dorsales.",
     "active": 1
   },
   {
-    "name": "Bent-Over Rows",
-    "couting_type": "reps",
-    "note": "Barbell or dumbbell exercise for the back muscles.",
+    "name": "Elevaciones laterales con mancuernas",
+    "counting_type": "reps",
+    "note": "Aísla los deltoides para una mayor definición de hombros.",
     "active": 1
   },
   {
-    "name": "Leg Press",
-    "couting_type": "reps",
-    "note": "Machine exercise for quads, hamstrings, and glutes.",
-    "active": 1
-  },
-  {
-    "name": "Leg Curls",
-    "couting_type": "reps",
-    "note": "Machine exercise to isolate the hamstrings.",
-    "active": 1
-  },
-  {
-    "name": "Tricep Dips",
-    "couting_type": "reps",
-    "note": "Bodyweight exercise for triceps, using a bench or parallel bars.",
-    "active": 1
-  },
-  {
-    "name": "Russian Twists",
-    "couting_type": "reps",
-    "note": "Core exercise for obliques.",
-    "active": 1
-  },
-  {
-    "name": "Wall Sit",
-    "couting_type": "time",
-    "note": "Isometric exercise for quads and endurance.",
-    "active": 1
-  },
-  {
-    "name": "Calf Raises",
-    "couting_type": "reps",
-    "note": "Exercise to strengthen the calf muscles.",
-    "active": 1
-  },
-  {
-    "name": "Burpees",
-    "couting_type": "reps",
-    "note": "Full body conditioning exercise.",
-    "active": 1
-  },
-  {
-    "name": "Mountain Climbers",
-    "couting_type": "time",
-    "note": "Cardio and core strengthening exercise.",
-    "active": 1
-  },
-  {
-    "name": "Side Plank",
-    "couting_type": "time",
-    "note": "Core exercise targeting the obliques.",
-    "active": 1
-  },
-  {
-    "name": "Glute Bridges",
-    "couting_type": "reps",
-    "note": "Exercise to activate and strengthen the glutes.",
-    "active": 1
-  },
-  {
-    "name": "Hammer Curls",
-    "couting_type": "reps",
-    "note": "Dumbbell curl variation for biceps and forearms.",
-    "active": 1
-  },
-  {
-    "name": "Tricep Pushdowns",
-    "couting_type": "reps",
-    "note": "Cable machine exercise to isolate the triceps.",
-    "active": 1
-  },
-  {
-    "name": "Lateral Raises",
-    "couting_type": "reps",
-    "note": "Dumbbell exercise for the side deltoids (shoulders).",
-    "active": 1
-  },
-  {
-    "name": "Front Raises",
-    "couting_type": "reps",
-    "note": "Dumbbell or plate exercise for the front deltoids.",
-    "active": 1
-  },
-  {
-    "name": "Leg Raises",
-    "couting_type": "reps",
-    "note": "Abdominal exercise targeting the lower abs.",
-    "active": 1
-  },
-  {
-    "name": "High Knees",
-    "couting_type": "time",
-    "note": "Cardio drill to increase heart rate.",
-    "active": 1
-  },
-  {
-    "name": "Barbell Squat",
-    "couting_type": "reps",
-    "note": "Compound lift for overall leg development.",
-    "active": 1
-  },
-  {
-    "name": "Incline Dumbbell Press",
-    "couting_type": "reps",
-    "note": "Targets the upper chest muscles.",
-    "active": 1
-  },
-  {
-    "name": "Lat Pulldowns",
-    "couting_type": "reps",
-    "note": "Machine exercise for the latissimus dorsi (back).",
-    "active": 1
-  },
-  {
-    "name": "Romanian Deadlifts",
-    "couting_type": "reps",
-    "note": "Targets hamstrings and glutes with less lower back stress.",
-    "active": 1
-  },
-  {
-    "name": "Kettlebell Swings",
-    "couting_type": "reps",
-    "note": "Explosive exercise for the posterior chain.",
-    "active": 1
-  },
-  {
-    "name": "Box Jumps",
-    "couting_type": "reps",
-    "note": "Plyometric exercise for explosive power.",
-    "active": 1
-  },
-  {
-    "name": "Flutter Kicks",
-    "couting_type": "time",
-    "note": "Core exercise targeting the lower abs.",
-    "active": 1
-  },
-  {
-    "name": "Diamond Push-ups",
-    "couting_type": "reps",
-    "note": "Push-up variation that emphasizes the triceps.",
-    "active": 1
-  },
-  {
-    "name": "Chin-ups",
-    "couting_type": "reps",
-    "note": "Back and bicep exercise with an underhand grip.",
-    "active": 1
-  },
-  {
-    "name": "Seated Cable Rows",
-    "couting_type": "reps",
-    "note": "Machine exercise for mid-back thickness.",
-    "active": 1
-  },
-  {
-    "name": "Arnold Press",
-    "couting_type": "reps",
-    "note": "Dumbbell shoulder press variation for all three deltoid heads.",
-    "active": 1
-  },
-  {
-    "name": "Bulgarian Split Squats",
-    "couting_type": "reps",
-    "note": "Single-leg squat variation for legs and glutes.",
-    "active": 1
-  },
-  {
-    "name": "Hip Thrusts",
-    "couting_type": "reps",
-    "note": "Excellent exercise for glute development.",
-    "active": 1
-  },
-  {
-    "name": "Face Pulls",
-    "couting_type": "reps",
-    "note": "Cable exercise for rear deltoids and upper back health.",
-    "active": 1
-  },
-  {
-    "name": "Preacher Curls",
-    "couting_type": "reps",
-    "note": "Bicep isolation exercise using a preacher bench.",
-    "active": 1
-  },
-  {
-    "name": "Skull Crushers",
-    "couting_type": "reps",
-    "note": "Lying tricep extension with a barbell or dumbbells.",
-    "active": 1
-  },
-  {
-    "name": "Good Mornings",
-    "couting_type": "reps",
-    "note": "Hip-hinge exercise for hamstrings and lower back.",
-    "active": 1
-  },
-  {
-    "name": "Reverse Crunches",
-    "couting_type": "reps",
-    "note": "Core exercise focusing on the lower abdominals.",
-    "active": 1
-  },
-  {
-    "name": "Hollow Body Hold",
-    "couting_type": "time",
-    "note": "Isometric core exercise for total ab stability.",
-    "active": 1
-  },
-  {
-    "name": "Treadmill Running",
-    "couting_type": "time",
-    "note": "Cardiovascular exercise.",
-    "active": 1
-  },
-  {
-    "name": "Stationary Cycling",
-    "couting_type": "time",
-    "note": "Low-impact cardiovascular exercise.",
-    "active": 1
-  },
-  {
-    "name": "Rowing Machine",
-    "couting_type": "time",
-    "note": "Full body cardio and conditioning.",
-    "active": 1
-  },
-  {
-    "name": "Battle Ropes",
-    "couting_type": "time",
-    "note": "High-intensity interval training for upper body and core.",
-    "active": 1
-  },
-  {
-    "name": "Dumbbell Flyes",
-    "couting_type": "reps",
-    "note": "Chest isolation exercise to stretch the pecs.",
-    "active": 1
-  },
-  {
-    "name": "Inverted Rows",
-    "couting_type": "reps",
-    "note": "Bodyweight pulling exercise for the back.",
-    "active": 1
-  },
-  {
-    "name": "Goblet Squat",
-    "couting_type": "reps",
-    "note": "Squat variation holding a dumbbell or kettlebell at the chest.",
-    "active": 1
-  },
-  {
-    "name": "Pistol Squats",
-    "couting_type": "reps",
-    "note": "Advanced single-leg bodyweight squat.",
-    "active": 1
-  },
-  {
-    "name": "Superman",
-    "couting_type": "reps",
-    "note": "Exercise for strengthening the lower back.",
-    "active": 1
-  },
-  {
-    "name": "Bird-Dog",
-    "couting_type": "reps",
-    "note": "Core stability exercise improving balance.",
-    "active": 1
-  },
-  {
-    "name": "Plank Jacks",
-    "couting_type": "time",
-    "note": "A dynamic variation of the plank for cardio and core.",
-    "active": 1
-  },
-  {
-    "name": "Sit-ups",
-    "couting_type": "reps",
-    "note": "Classic abdominal exercise.",
-    "active": 1
-  },
-  {
-    "name": "V-ups",
-    "couting_type": "reps",
-    "note": "Advanced core exercise targeting upper and lower abs.",
-    "active": 1
-  },
-  {
-    "name": "Decline Push-ups",
-    "couting_type": "reps",
-    "note": "Targets the upper chest and shoulders.",
-    "active": 1
-  },
-  {
-    "name": "Wide-Grip Pull-ups",
-    "couting_type": "reps",
-    "note": "Pull-up variation to emphasize lat width.",
-    "active": 1
-  },
-  {
-    "name": "Upright Row",
-    "couting_type": "reps",
-    "note": "Barbell or dumbbell exercise for shoulders and traps.",
-    "active": 1
-  },
-  {
-    "name": "Shrugs",
-    "couting_type": "reps",
-    "note": "Exercise to isolate the trapezius muscles.",
-    "active": 1
-  },
-  {
-    "name": "Leg Extensions",
-    "couting_type": "reps",
-    "note": "Machine exercise to isolate the quadriceps.",
-    "active": 1
-  },
-  {
-    "name": "Seated Calf Raise",
-    "couting_type": "reps",
-    "note": "Targets the soleus muscle in the calf.",
-    "active": 1
-  },
-  {
-    "name": "Dumbbell Step-ups",
-    "couting_type": "reps",
-    "note": "Single-leg exercise for glutes and quads using a box or bench.",
-    "active": 1
-  },
-  {
-    "name": "Concentration Curls",
-    "couting_type": "reps",
-    "note": "Seated bicep curl for peak contraction.",
-    "active": 1
-  },
-  {
-    "name": "Overhead Tricep Extension",
-    "couting_type": "reps",
-    "note": "Can be done with a dumbbell or cable to target triceps.",
-    "active": 1
-  },
-  {
-    "name": "Side Lunges",
-    "couting_type": "reps",
-    "note": "Lunge variation for inner and outer thighs.",
-    "active": 1
-  },
-  {
-    "name": "Donkey Kicks",
-    "couting_type": "reps",
-    "note": "Glute isolation exercise.",
-    "active": 1
-  },
-  {
-    "name": "Fire Hydrants",
-    "couting_type": "reps",
-    "note": "Targets the gluteus medius and improves hip mobility.",
-    "active": 1
-  },
-  {
-    "name": "Bicycle Crunches",
-    "couting_type": "reps",
-    "note": "Core exercise for rectus abdominis and obliques.",
-    "active": 1
-  },
-  {
-    "name": "Heel Touches",
-    "couting_type": "reps",
-    "note": "Abdominal exercise targeting the obliques.",
-    "active": 1
-  },
-  {
-    "name": "Jump Rope",
-    "couting_type": "time",
-    "note": "Excellent cardio and coordination exercise.",
-    "active": 1
-  },
-  {
-    "name": "Elliptical Trainer",
-    "couting_type": "time",
-    "note": "Low-impact, full-body cardiovascular workout.",
-    "active": 1
-  },
-  {
-    "name": "Stair Climber",
-    "couting_type": "time",
-    "note": "High-intensity cardio that targets legs and glutes.",
-    "active": 1
-  },
-  {
-    "name": "Farmer's Walk",
-    "couting_type": "time",
-    "note": "Develops grip strength, core stability, and overall endurance.",
-    "active": 1
-  },
-  {
-    "name": "Tire Flips",
-    "couting_type": "reps",
-    "note": "Full-body strength and conditioning exercise.",
-    "active": 1
-  },
-  {
-    "name": "Sled Push",
-    "couting_type": "time",
-    "note": "Develops leg power and anaerobic conditioning.",
-    "active": 1
-  },
-  {
-    "name": "Box Squats",
-    "couting_type": "reps",
-    "note": "Squat variation to develop posterior chain power.",
-    "active": 1
-  },
-  {
-    "name": "Close-Grip Bench Press",
-    "couting_type": "reps",
-    "note": "Bench press variation to emphasize the triceps.",
-    "active": 1
-  },
-  {
-    "name": "T-Bar Row",
-    "couting_type": "reps",
-    "note": "Back exercise for thickness and strength.",
-    "active": 1
-  },
-  {
-    "name": "Reverse Flyes",
-    "couting_type": "reps",
-    "note": "Targets the rear deltoids and upper back muscles.",
-    "active": 1
-  },
-  {
-    "name": "Cable Crossovers",
-    "couting_type": "reps",
-    "note": "Chest isolation exercise for the inner pecs.",
-    "active": 1
-  },
-  {
-    "name": "Pec Deck Machine",
-    "couting_type": "reps",
-    "note": "Machine fly variation for chest isolation.",
-    "active": 1
-  },
-  {
-    "name": "Hanging Leg Raises",
-    "couting_type": "reps",
-    "note": "Advanced core exercise for lower abs and hip flexors.",
-    "active": 1
-  },
-  {
-    "name": "Ab Rollout",
-    "couting_type": "reps",
-    "note": "Challenging core exercise using an ab wheel.",
-    "active": 1
-  },
-  {
-    "name": "Wood Chops",
-    "couting_type": "reps",
-    "note": "Rotational core exercise using a cable or band.",
-    "active": 1
-  },
-  {
-    "name": "Pallof Press",
-    "couting_type": "time",
-    "note": "Anti-rotation core stability exercise.",
-    "active": 1
-  },
-  {
-    "name": "Cat-Cow Stretch",
-    "couting_type": "reps",
-    "note": "Gentle spinal mobility exercise.",
-    "active": 1
-  },
-  {
-    "name": "Downward Dog",
-    "couting_type": "time",
-    "note": "Yoga pose for full body stretching.",
-    "active": 1
-  },
-  {
-    "name": "Cobra Stretch",
-    "couting_type": "time",
-    "note": "Stretches the abdominal muscles and lower back.",
-    "active": 1
-  },
-  {
-    "name": "Child's Pose",
-    "couting_type": "time",
-    "note": "Restorative yoga pose for the back and hips.",
-    "active": 1
-  },
-  {
-    "name": "Hamstring Stretch",
-    "couting_type": "time",
-    "note": "Static stretch for the back of the legs.",
-    "active": 1
-  },
-  {
-    "name": "Quad Stretch",
-    "couting_type": "time",
-    "note": "Static stretch for the front of the thighs.",
-    "active": 1
-  },
-  {
-    "name": "Chest Stretch",
-    "couting_type": "time",
-    "note": "Static stretch for the pectoral muscles.",
-    "active": 1
-  },
-  {
-    "name": "Shoulder Stretch",
-    "couting_type": "time",
-    "note": "Static stretch across the deltoids.",
-    "active": 1
-  },
-  {
-    "name": "Bear Crawl",
-    "couting_type": "time",
-    "note": "Full body exercise for coordination and core strength.",
+    "name": "Abdominales en polea alta",
+    "counting_type": "reps",
+    "note": "Permite un trabajo de abdominales con resistencia.",
     "active": 1
   }
 ]

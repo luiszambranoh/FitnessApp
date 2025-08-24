@@ -12,6 +12,7 @@ const settingsItems = [
   { href: '/profile/language', tKey: 'settings.language', icon: 'globe' as const },
   { href: '/profile/body-data', tKey: 'settings.bodyData', icon: 'activity' as const },
   { href: '/profile/routine', tKey: 'settings.routine', icon: 'calendar' as const },
+  { href: '/profile/database', tKey: 'settings.database', icon: 'database' as const },
 ];
 
 const SettingsItem = ({ href, tKey, icon }: typeof settingsItems[0]) => {

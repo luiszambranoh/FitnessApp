@@ -9,7 +9,9 @@
     "theme": "Tema",
     "language": "Idioma",
     "bodyData": "Datos Corporales",
-    "routine": "Rutina"
+    "routine": "Rutina",
+    "database": "Base de datos",
+    "databaseTitle": "Gestión de la Base de Datos"
   },
   "createExercise": {
     "title": "Crear Nuevo Ejercicio",
@@ -205,5 +207,17 @@
     "calf_right": "Pantorrilla Derecha (cm)",
     "addButton": "Añadir Medida",
     "noData": "No se encontraron medidas corporales."
+  },
+  "database": {
+    "exportButton": "Exportar Base de Datos",
+    "importButton": "Importar Base de Datos",
+    "exportSuccessTitle": "Exportación Exitosa",
+    "exportSuccessMessage": "La base de datos ha sido exportada exitosamente.",
+    "exportErrorTitle": "Error de Exportación",
+    "exportErrorMessage": "Ocurrió un error al exportar la base de datos.",
+    "importSuccessTitle": "Importación Exitosa",
+    "importSuccessMessage": "La base de datos ha sido importada exitosamente. Por favor, reinicia la aplicación.",
+    "importErrorTitle": "Error de Importación",
+    "importErrorMessage": "Ocurrió un error al importar la base de datos."
   }
 }

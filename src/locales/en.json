@@ -9,7 +9,9 @@
     "theme": "Theme",
     "language": "Language",
     "bodyData": "Body Data",
-    "routine": "Routine"
+    "routine": "Routine",
+    "database": "Database",
+    "databaseTitle": "Database Management"
   },
   "createExercise": {
     "title": "Create New Exercise",
@@ -209,5 +211,17 @@
     "calf_right": "Right Calf (cm)",
     "addButton": "Add Measurement",
     "noData": "No body measurements found."
+  },
+  "database": {
+    "exportButton": "Export Database",
+    "importButton": "Import Database",
+    "exportSuccessTitle": "Export Successful",
+    "exportSuccessMessage": "The database has been exported successfully.",
+    "exportErrorTitle": "Export Error",
+    "exportErrorMessage": "An error occurred while exporting the database.",
+    "importSuccessTitle": "Import Successful",
+    "importSuccessMessage": "The database has been imported successfully. Please restart the app.",
+    "importErrorTitle": "Import Error",
+    "importErrorMessage": "An error occurred while importing the database."
   }
 }

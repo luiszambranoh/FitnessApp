@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, Alert, TouchableOpacity, TextInput } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -6,28 +6,14 @@ import { layout, form, list } from '../../styles/theme';
 import { RoutineService } from '../../database/database';
 import { RoutineRow } from '../../database/types/dbTypes';
 import { FontAwesome } from '@expo/vector-icons';
+import { useCrud } from '../../hooks/useCrud';
 
 export default function RoutinesScreen() {
   const { t } = useTranslation();
-  const [routines, setRoutines] = useState<RoutineRow[]>([]);
+  const { items: routines, updateItem, deleteItem } = useCrud(RoutineService);
   const [editingRoutineId, setEditingRoutineId] = useState<number | null>(null);
   const [newRoutineName, setNewRoutineName] = useState('');
   const [newRoutineNote, setNewRoutineNote] = useState<string | null>('');
-
-  const fetchRoutines = async () => {
-    try {
-      const fetchedRoutines = await RoutineService.getAll();
-      setRoutines(fetchedRoutines);
-    } catch (error) {
-      console.error("Error fetching routines:", error);
-      Alert.alert(t('general.error'), "Failed to load routines.");
-    }
-  };
-
-  useEffect(() => {
-
-    fetchRoutines();
-  }, []);
 
   const handleEdit = (routine: RoutineRow) => {
     setEditingRoutineId(routine.id);
@@ -47,10 +33,13 @@ export default function RoutinesScreen() {
     const routineToUpdate = routines.find(r => r.id === editingRoutineId);
     if (routineToUpdate) {
         try {
-            await RoutineService.update({ ...routineToUpdate, name: newRoutineName, note: newRoutineNote });
-            Alert.alert(t('general.success'), t('routines.updateSuccess'));
-            fetchRoutines();
-            handleCancel();
+            const success = await updateItem({ ...routineToUpdate, name: newRoutineName, note: newRoutineNote });
+            if (success) {
+                Alert.alert(t('general.success'), t('routines.updateSuccess'));
+                handleCancel();
+            } else {
+                Alert.alert(t('general.error'), t('routines.updateFail'));
+            }
         } catch (error) {
             console.error('Error updating routine:', error);
             Alert.alert(t('general.error'), t('routines.updateFail'));
@@ -71,10 +60,9 @@ export default function RoutinesScreen() {
           text: t('workoutList.yes'),
           onPress: async () => {
             try {
-              const deleted = await RoutineService.delete(id);
+              const deleted = await deleteItem(id);
               if (deleted) {
                 Alert.alert(t('general.success'), t('routines.deleteSuccess'));
-                fetchRoutines();
               } else {
                 Alert.alert(t('general.error'), t('routines.deleteFail'));
               }
@@ -153,5 +141,3 @@ export default function RoutinesScreen() {
     </View>
   );
 }
-
-// 

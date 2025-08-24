@@ -1,34 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
-import { Link, router } from 'expo-router';
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { layout, form } from '../../styles/theme';
 import { ExerciseService } from '../../database/database';
 import { ExerciseRow } from '../../database/types/dbTypes';
 import ExerciseCard from '../../components/ExerciseCard';
+import { useCrud } from '../../hooks/useCrud';
 
 export default function ExercisesScreen() {
   const { t } = useTranslation();
-  const [exercises, setExercises] = useState<ExerciseRow[]>([]);
-
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const fetchedExercises = await ExerciseService.getAll();
-        setExercises(fetchedExercises);
-      } catch (error) {
-        console.error("Error fetching exercises:", error);
-        Alert.alert(t('general.error'), "Failed to load exercises.");
-      }
-    };
-    fetchExercises();
-  }, []);
+  const { items: exercises } = useCrud(ExerciseService);
 
   const renderExerciseItem = ({ item }: { item: ExerciseRow }) => (
     <ExerciseCard
-    exercise={item}
-    isSelected={false}
-    onSelect={() => {}}
+      exercise={item}
+      isSelected={false}
+      onSelect={() => {}}
     />
   );
 

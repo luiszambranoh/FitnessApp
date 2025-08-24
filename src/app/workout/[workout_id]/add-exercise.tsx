@@ -20,7 +20,7 @@ export default function AddExercise() {
         setAllExercises(fetchedExercises);
       } catch (error) {
         console.error("Error fetching exercises:", error);
-        Alert.alert(t('general.error'), "Failed to load exercises."); // Using general.error
+        Alert.alert(t('general.error'), "Failed to load exercises.");
       }
     };
     fetchExercises();
@@ -87,8 +87,17 @@ export default function AddExercise() {
           <FlatList
             data={selectedExercises}
             keyExtractor={(item) => `selected-${item.id.toString()}`}
-            renderItem={renderExerciseCard}
-            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <View style={{ width: 250, marginRight: 10 }}>
+                <ExerciseCard
+                  exercise={item}
+                  isSelected={selectedExerciseIds.includes(item.id)}
+                  onSelect={toggleExerciseSelection}
+                />
+              </View>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={true}
           />
         </View>
       )}

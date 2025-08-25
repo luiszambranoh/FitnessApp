@@ -21,7 +21,7 @@ export default function StackLayout(){
           title: t('settings.title')
         }}
       />
-      <Stack.Screen name="exercise/create-exercise"
+      <Stack.Screen name="exercises/create-exercise"
         options={{
           title: t('createExercise.title')
         }}

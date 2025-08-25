@@ -27,7 +27,7 @@ export default function ExercisesScreen() {
   return (
     <View className={layout.container}>
       <View className="mb-4">
-        <Link href="/profile/create-exercise" asChild>
+        <Link href="/profile/exercises/create-exercise" asChild>
           <TouchableOpacity className={form.button}>
             <Text className={form.buttonText}>{t('exercises.createButton')}</Text>
           </TouchableOpacity>

@@ -1,0 +1,81 @@
+[
+  {
+    "name": "Sentadilla con barra",
+    "counting_type": "reps",
+    "note": "Ejercicio fundamental para piernas y glúteos.",
+    "active": 1
+  },
+  {
+    "name": "Press de banca",
+    "counting_type": "reps",
+    "note": "Ejercicio clave para el pecho, hombros y tríceps.",
+    "active": 1
+  },
+  {
+    "name": "Peso muerto",
+    "counting_type": "reps",
+    "note": "Trabaja la espalda, glúteos, isquiotibiales y core. Usa una técnica adecuada.",
+    "active": 1
+  },
+  {
+    "name": "Dominadas",
+    "counting_type": "reps",
+    "note": "Ejercicio para la espalda y bíceps. Si es difícil, usa una banda de resistencia.",
+    "active": 1
+  },
+  {
+    "name": "Press de hombros con mancuernas",
+    "counting_type": "reps",
+    "note": "Fortalece los hombros y la parte superior del cuerpo.",
+    "active": 1
+  },
+  {
+    "name": "Remo con mancuernas",
+    "counting_type": "reps",
+    "note": "Aísla la espalda alta y los dorsales.",
+    "active": 1
+  },
+  {
+    "name": "Curl de bíceps con barra Z",
+    "counting_type": "reps",
+    "note": "Aísla y fortalece los bíceps.",
+    "active": 1
+  },
+
+  {
+    "name": "Plancha",
+    "counting_type": "time",
+    "note": "Fortalece el core, la espalda baja y los abdominales.",
+    "active": 1
+  },
+  {
+    "name": "Flexiones de brazos",
+    "counting_type": "reps",
+    "note": "Ejercicio de peso corporal para pecho, hombros y tríceps.",
+    "active": 1
+  },
+  {
+    "name": "Hip thrust con barra",
+    "counting_type": "reps",
+    "note": "Uno de los mejores ejercicios para glúteos.",
+    "active": 1
+  },
+  {
+    "name": "Remo en máquina",
+    "counting_type": "reps",
+    "note": "Ideal para la espalda, con un enfoque en los dorsales.",
+    "active": 1
+  },
+  {
+    "name": "Elevaciones laterales con mancuernas",
+    "counting_type": "reps",
+    "note": "Aísla los deltoides para una mayor definición de hombros.",
+    "active": 1
+  },
+  {
+    "name": "Abdominales en polea alta",
+    "counting_type": "reps",
+    "note": "Permite un trabajo de abdominales con resistencia.",
+    "active": 1
+  }
+]

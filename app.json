@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Fitness App",
+    "slug": "fitness-app",
+    "version": "1.0.0",
+    "scheme": "fitnessapp",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "enableFTS": false,
+        "useSQLCipher": false,
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.zalihy.fitnessapp"
+    },
+    "web": {
+      "favicon": "./assets/icon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-sqlite",
+        {
+            "enableFTS": true,
+            "useSQLCipher": true,
+            "android": {
+              "enableFTS": false,
+              "useSQLCipher": false
+            }
+          }
+      ],
+      "expo-router"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a1560a8a-5aa6-475a-92b5-427caa16bfe9"
+      }
+    }
+  }
+}

@@ -37,4 +37,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # build
-/android
+android/

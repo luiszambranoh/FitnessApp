@@ -110,7 +110,8 @@
     "addSet": "Agregar Serie",
     "addExercise": "Agregar Ejercicio",
     "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!",
-    "actions": "Acciones"
+    "actions": "Acciones",
+    "superset": "Superserie"
   },
   "workoutScreen": {
     "invalidId": "ID de Entrenamiento inválido.",

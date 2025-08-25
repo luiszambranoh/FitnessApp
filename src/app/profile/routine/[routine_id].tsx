@@ -120,9 +120,10 @@ export default function RoutineIdScreen() {
   const updateSetInDb = async (updatedSet: RoutineSetRow) => {
     try {
       await RoutineService.updateSet(updatedSet);
+      fetchRoutineDetails();
     } catch (error) {
       console.error("Error updating set:", error);
-      Alert.alert(t('general.error'), t('routines.updateSetFailed'));
+      Alert.alert(t('routines.updateSetFailed'));
     }
   };
 
@@ -364,10 +365,40 @@ export default function RoutineIdScreen() {
     );
   };
 
-  const renderGroupedExercises = ({ item }: { item: {exercises: FullRoutineExercise[]} }) => {
+  const renderGroupedExercises = ({ item }: { item: { superset?: SupersetRow; exercises: FullRoutineExercise[] } }) => {
+    const isSuperset = !!item.superset;
+    const supersetId = item.superset?.id;
+    const isCollapsed = supersetId ? collapsedSupersets.has(supersetId) : false;
+    const supersetStyles = supersetId ? getSupersetStyles(supersetId, isDark) : null;
+
     return (
       <View className="mb-4">
-        {renderExerciseBlock(item.exercises[0])}
+        {isSuperset && item.superset && (
+          <TouchableOpacity
+            onPress={() => toggleSupersetCollapse(item.superset!.id)}
+            className={`flex-row items-center p-3 rounded-t-lg ${supersetStyles?.headerBackground}`}
+          >
+            <Feather
+              name={isCollapsed ? "chevron-down" : "chevron-up"}
+              size={20}
+              color={supersetStyles?.headerText}
+              className="mr-2"
+            />
+            <Text className={`font-bold text-lg ${supersetStyles?.headerText}`}>
+              {t('workout.superset')} {item.superset.number}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {!isCollapsed && (
+          <View className={isSuperset ? `rounded-b-lg overflow-hidden ${supersetStyles?.bodyBackground}` : ''}>
+            {item.exercises.map((exercise, index) => (
+              <View key={exercise.id} className={isSuperset && index > 0 ? 'mt-2' : ''}>
+                {renderExerciseBlock(exercise, isSuperset, supersetId)}
+              </View>
+            ))}
+          </View>
+        )}
       </View>
     );
   };
@@ -384,7 +415,7 @@ export default function RoutineIdScreen() {
 
       <FlatList
         data={groupedExercises}
-        keyExtractor={(item) => `exercise-${item.exercises[0].id}`}
+        keyExtractor={(item) => `group-${item.superset?.id || item.exercises[0].id}`}
         renderItem={renderGroupedExercises}
         ListEmptyComponent={
           <Text className={workout.noExercisesText}>

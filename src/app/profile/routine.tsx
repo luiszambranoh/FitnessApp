@@ -10,7 +10,7 @@ import { useCrud } from '../../hooks/useCrud';
 
 export default function RoutinesScreen() {
   const { t } = useTranslation();
-  const { data: routines, updateItem, deleteItem } = useCrud(RoutineService);
+  const { data: routines, updateItem, deleteItem, refetch } = useCrud(RoutineService);
   const [editingRoutineId, setEditingRoutineId] = useState<number | null>(null);
   const [newRoutineName, setNewRoutineName] = useState('');
   const [newRoutineNote, setNewRoutineNote] = useState<string | null>('');
@@ -37,6 +37,7 @@ export default function RoutinesScreen() {
             if (success) {
                 Alert.alert(t('general.success'), t('routines.updateSuccess'));
                 handleCancel();
+                refetch();
             } else {
                 Alert.alert(t('general.error'), t('routines.updateFail'));
             }
@@ -63,6 +64,7 @@ export default function RoutinesScreen() {
               const deleted = await deleteItem(id);
               if (deleted) {
                 Alert.alert(t('general.success'), t('routines.deleteSuccess'));
+                refetch();
               } else {
                 Alert.alert(t('general.error'), t('routines.deleteFail'));
               }

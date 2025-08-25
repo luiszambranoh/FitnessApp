@@ -10,7 +10,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useCrud } from "../../hooks/useCrud";
 
 export default function WorkoutScreen() {
-  const { data: workouts, addItem: addWorkout, deleteItem: deleteWorkout } = useCrud(WorkoutService);
+  const { data: workouts, addItem: addWorkout, deleteItem: deleteWorkout, refetch } = useCrud(WorkoutService);
   const { data: routines } = useCrud(RoutineService);
   const { t } = useTranslation();
 
@@ -19,6 +19,7 @@ export default function WorkoutScreen() {
       const newId = await addWorkout({note: ""});
       if (newId) {
         router.navigate(`/workout/${newId}`);
+        refetch()
       } else {
         console.error(t('workoutList.createWorkoutFailed'));
       }
@@ -33,6 +34,7 @@ export default function WorkoutScreen() {
       const newWorkoutId = await RoutineService.createWorkoutFromRoutine(routineId);
       if (newWorkoutId) {
         router.navigate(`/workout/${newWorkoutId}`);
+        refetch();
       } else {
         Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
       }
@@ -40,6 +42,29 @@ export default function WorkoutScreen() {
       console.error(t('workoutList.createWorkoutFromRoutineError'), error);
       Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
     }
+  };
+
+  const handleDeleteWorkout = async (id: number) => {
+    Alert.alert(
+      t('workoutList.confirmDeleteTitle'),
+      t('workoutList.confirmDeleteMessage'),
+      [
+        { text: t('workoutList.no'), style: 'cancel' },
+        {
+          text: t('workoutList.yes'),
+          onPress: async () => {
+            try {
+              await deleteWorkout(id);
+              refetch();
+            } catch (error) {
+              console.error(t('workoutList.deleteFail'), error);
+              Alert.alert(t('general.error'), t('workoutList.deleteFail'));
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const renderWorkoutItem = ({ item }: { item: WorkoutRow }) => {
@@ -55,6 +80,9 @@ export default function WorkoutScreen() {
           <Text className={table.rowText}>{new Date(item.date).toLocaleDateString()}</Text>
           <Text className={table.rowText}>{item.time}</Text>
         </Pressable>
+        <TouchableOpacity onPress={() => handleDeleteWorkout(item.id)} className="p-2">
+          <FontAwesome name="trash" size={20} color="red" />
+        </TouchableOpacity>
       </View>
     );
   };
@@ -73,7 +101,7 @@ export default function WorkoutScreen() {
       <TouchableOpacity className={form.button} onPress={handleCreateNewWorkout}>
         <Text className={form.buttonText}>{t('workoutList.newWorkoutButton')}</Text>
       </TouchableOpacity>
-      <View className="mt-4 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden h-56">
+      <View className="mt-4 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden h-1/3">
         <View className={table.headerContainer}>
           <Text className={table.headerText}>{t('workoutList.dateHeader')}</Text>
           <Text className={table.headerText}>{t('workoutList.timeHeader')}</Text>

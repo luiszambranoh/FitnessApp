@@ -106,7 +106,8 @@
     "addSet": "Add Set",
     "addExercise": "Add Exercise",
     "noExercisesAdded": "No exercises added yet. Click the button above to add one!",
-    "actions": "Actions"
+    "actions": "Actions",
+    "superset": "Superset"
   },
   "workoutDetails": {
     "invalidWorkoutId": "Invalid Workout ID.",

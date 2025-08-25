@@ -283,14 +283,16 @@ export class RoutineService {
 
   // Routine-exercise level methods
   static async addExercise(re: NewRoutineExercise): Promise<number | null> {
-    const query = `INSERT INTO routine_exercises (note, routine_id, exercise_id) VALUES (?, ?, ?)`;
-    const params = [re.note, re.routine_id, re.exercise_id];
+    const query = `INSERT INTO routine_exercises (note, routine_id, exercise_id, superset_id) VALUES (?, ?, ?, ?)`;
+    const params = [re.note, re.routine_id, re.exercise_id, re.superset_id];
     return DatabaseHelper.insert(query, params);
   }
 
-  static async getExercisesByRoutineId(routineId: number): Promise<RoutineExerciseRow[]> {
-    const query = `SELECT * FROM routine_exercises WHERE routine_id = ?`;
-    return DatabaseHelper.query<RoutineExerciseRow>(query, [routineId]);
+  static async updateExercise(re: RoutineExerciseRow): Promise<boolean> {
+    if (!re.id) return false;
+    const query = `UPDATE routine_exercises SET note = ?, routine_id = ?, exercise_id = ?, superset_id = ? WHERE id = ?`;
+    const params = [re.note, re.routine_id, re.exercise_id, re.superset_id, re.id];
+    return DatabaseHelper.update(query, params);
   }
 
   static async removeExercise(id: number): Promise<boolean> {
@@ -321,6 +323,11 @@ export class RoutineService {
   }
 
   // Complex operations
+  static async getExercisesByRoutineId(routineId: number): Promise<RoutineExerciseRow[]> {
+    const query = `SELECT * FROM routine_exercises WHERE routine_id = ?`;
+    return DatabaseHelper.query<RoutineExerciseRow>(query, [routineId]);
+  }
+
   static async createWorkoutFromRoutine(routineId: number): Promise<number | null> {
     // 1. Create a new workout
     const newWorkoutId = await WorkoutService.add({ note: 'Workout from routine' });
@@ -329,7 +336,7 @@ export class RoutineService {
     }
 
     // 2. Get all exercises for the routine
-    const routineExercises = await this.getExercisesByRoutineId(routineId);
+    const routineExercises = await RoutineService.getExercisesByRoutineId(routineId);
 
     // 3. Loop through each routine exercise, create a session exercise, and copy the sets
     for (const rExercise of routineExercises) {
@@ -337,13 +344,13 @@ export class RoutineService {
         session_id: newWorkoutId,
         exercise_id: rExercise.exercise_id,
         note: rExercise.note,
-        superset_id: null // Superset functionality can be added later if needed
+        superset_id: rExercise.superset_id // Copy superset_id from routine exercise
       };
       const newSessionExerciseId = await SessionExerciseService.add(newSessionExercise);
 
       if (newSessionExerciseId) {
         // 4. Get all sets for the routine exercise
-        const routineSets = await this.getSetsByRoutineExerciseId(rExercise.id);
+        const routineSets = await RoutineService.getSetsByRoutineExerciseId(rExercise.id);
         for (const rSet of routineSets) {
           const newSet: NewSet = {
             session_exercise_id: newSessionExerciseId,

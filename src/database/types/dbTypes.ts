@@ -58,6 +58,7 @@ export interface RoutineExerciseRow {
   note: string | null;
   routine_id: number;
   exercise_id: number;
+  superset_id: number | null;
 }
 
 export interface RoutineSetRow {

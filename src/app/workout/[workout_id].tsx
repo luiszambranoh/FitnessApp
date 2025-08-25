@@ -207,6 +207,8 @@ export default function WorkoutID() {
     );
 
     updateSetInDb(updatedSet);
+    fetchWorkoutDetails();
+    setSelectedSet(null); // Close the dialog
   };
 
   const handleOpenSetOptions = (set: SetRow) => {

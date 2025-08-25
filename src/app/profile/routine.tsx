@@ -10,7 +10,7 @@ import { useCrud } from '../../hooks/useCrud';
 
 export default function RoutinesScreen() {
   const { t } = useTranslation();
-  const { items: routines, updateItem, deleteItem } = useCrud(RoutineService);
+  const { data: routines, updateItem, deleteItem } = useCrud(RoutineService);
   const [editingRoutineId, setEditingRoutineId] = useState<number | null>(null);
   const [newRoutineName, setNewRoutineName] = useState('');
   const [newRoutineNote, setNewRoutineNote] = useState<string | null>('');

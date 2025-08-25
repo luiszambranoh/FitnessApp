@@ -1,12 +1,13 @@
 import React, { useState, useRef, useCallback } from "react";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
-import { View, Text, TouchableOpacity, FlatList, Alert, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert, TextInput, useColorScheme } from "react-native";
 import { useTranslation } from "react-i18next";
 import { layout, form, workout } from "../../../styles/theme";
 import { Feather } from "@expo/vector-icons";
 import {
   RoutineService,
   ExerciseService,
+  SupersetService,
 } from "../../../database/database";
 import {
   RoutineExerciseRow,
@@ -15,9 +16,12 @@ import {
   NewRoutineSet,
   SetType,
   RoutineRow,
+  SupersetRow,
 } from "../../../database/types/dbTypes";
 import SetOptionsContent from "../../../components/SetOptionsContent";
 import BottomSheetDialog from "../../../components/BottomSheetDialog";
+import SupersetDialog from "../../../components/SupersetDialog";
+import { getSupersetStyles } from "../../../utils/supersetColors";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
@@ -31,16 +35,21 @@ const debounce = (func: Function, delay: number) => {
 interface FullRoutineExercise extends RoutineExerciseRow {
   exerciseDetails: ExerciseRow | null;
   sets: RoutineSetRow[];
+  supersetDetails?: SupersetRow | null;
 }
 
 export default function RoutineIdScreen() {
   const { routine_id } = useLocalSearchParams();
   const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [routine, setRoutine] = useState<RoutineRow | null>(null);
   const [routineExercises, setRoutineExercises] = useState<FullRoutineExercise[]>([]);
   const [selectedSet, setSelectedSet] = useState<RoutineSetRow | null>(null);
-  const [groupedExercises, setGroupedExercises] = useState<{exercises: FullRoutineExercise[]}[]>([]);
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
+  const [selectedExerciseForSuperset, setSelectedExerciseForSuperset] = useState<FullRoutineExercise | null>(null);
+  const [groupedExercises, setGroupedExercises] = useState<{superset?: SupersetRow; exercises: FullRoutineExercise[]}[]>([]);
+  const [collapsedSupersets, setCollapsedSupersets] = useState<Set<number>>(new Set());
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const routineIdNum = Number(routine_id);
 
   const fetchRoutineDetails = useCallback(async () => {
@@ -54,14 +63,18 @@ export default function RoutineIdScreen() {
         fetchedRoutineExercises.map(async (re) => {
           const exerciseDetails = await ExerciseService.getById(re.exercise_id);
           const sets = await RoutineService.getSetsByRoutineExerciseId(re.id);
-          return { ...re, exerciseDetails, sets };
+          const supersetDetails = re.superset_id ? await SupersetService.getById(re.superset_id) : null; // Fetch superset details
+          return { ...re, exerciseDetails, sets, supersetDetails }; // Include superset details
         })
       );
       setRoutineExercises(fullRoutineExercises);
       
-      // Group exercises (for now just individual groups, can be enhanced for routine supersets later)
-      const grouped = fullRoutineExercises.map(exercise => ({ exercises: [exercise] }));
+      // Group exercises by superset
+      const grouped = groupExercisesBySuperset(fullRoutineExercises); // Use new grouping function
       setGroupedExercises(grouped);
+      
+      // Clear input values when data is refreshed from server
+      setInputValues({}); // Clear input values
     } catch (error) {
       console.error("Error fetching routine details:", error);
       Alert.alert(t('general.error'), t('routines.loadFailed'));
@@ -155,11 +168,48 @@ export default function RoutineIdScreen() {
     );
 
     updateSetInDb(updatedSet);
+    fetchRoutineDetails();
     setSelectedSet(null); // Close the dialog
   };
 
   const handleOpenSetOptions = (set: RoutineSetRow) => {
     setSelectedSet(set);
+  };
+
+  const groupExercisesBySuperset = (exercises: FullRoutineExercise[]) => {
+    const grouped: {superset?: SupersetRow; exercises: FullRoutineExercise[]}[] = [];
+    const supersetMap = new Map<number, FullRoutineExercise[]>();
+    const noSupersetExercises: FullRoutineExercise[] = [];
+
+    exercises.forEach(exercise => {
+      if (exercise.superset_id && exercise.supersetDetails) {
+        if (!supersetMap.has(exercise.superset_id)) {
+          supersetMap.set(exercise.superset_id, []);
+        }
+        supersetMap.get(exercise.superset_id)!.push(exercise);
+      } else {
+        noSupersetExercises.push(exercise);
+      }
+    });
+
+    // Add superset groups (sorted by superset number)
+    const sortedSupersets = Array.from(supersetMap.entries()).sort(
+      (a, b) => (a[1][0]?.supersetDetails?.number || 0) - (b[1][0]?.supersetDetails?.number || 0)
+    );
+
+    sortedSupersets.forEach(([supersetId, exercises]) => {
+      grouped.push({
+        superset: exercises[0].supersetDetails!,
+        exercises: exercises.sort((a, b) => a.id - b.id) // Sort exercises within superset by creation order
+      });
+    });
+
+    // Add non-superset exercises
+    noSupersetExercises.forEach(exercise => {
+      grouped.push({ exercises: [exercise] });
+    });
+
+    return grouped;
   };
 
   const handleDeleteExercise = async (routineExerciseId: number) => {
@@ -185,16 +235,67 @@ export default function RoutineIdScreen() {
     );
   };
 
-  const renderExerciseBlock = (item: FullRoutineExercise) => {
+  const handleOpenSupersetDialog = (exercise: FullRoutineExercise) => {
+    setSelectedExerciseForSuperset(exercise);
+  };
+
+  const handleSupersetAssigned = async (supersetId: number | null) => {
+    if (!selectedExerciseForSuperset) return;
+
+    try {
+      const updatedExercise = { ...selectedExerciseForSuperset, superset_id: supersetId };
+      await RoutineService.updateExercise(updatedExercise); // Use RoutineService.updateExercise
+      setSelectedExerciseForSuperset(null);
+      fetchRoutineDetails();
+    } catch (error) {
+      console.error('Error updating superset:', error);
+      Alert.alert(t('general.error'), 'Failed to update superset'); // TODO: Add i18n key
+    }
+  };
+
+  const toggleSupersetCollapse = (supersetId: number) => {
+    setCollapsedSupersets(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(supersetId)) {
+        newSet.delete(supersetId);
+      } else {
+        newSet.add(supersetId);
+      }
+      return newSet;
+    });
+  };
+
+  const getInputKey = (setId: number, field: string) => `${setId}_${field}`;
+
+  const getInputValue = (setId: number, field: keyof RoutineSetRow, dbValue: number | null) => {
+    const inputKey = getInputKey(setId, field);
+    // Use local input value if it exists, otherwise use database value
+    if (inputValues.hasOwnProperty(inputKey)) {
+      return inputValues[inputKey];
+    }
+    return dbValue?.toString() || '';
+  };
+
+  const renderExerciseBlock = (item: FullRoutineExercise, isInSuperset = false, supersetId?: number) => {
     let normalSetCounter = 0;
+    const supersetStyles = supersetId ? getSupersetStyles(supersetId, isDark) : null;
 
     return (
-      <View className={workout.exerciseBlockContainer}>
+      <View 
+        className={`${workout.exerciseBlockContainer} ${isInSuperset ? 'ml-4' : ''}`}
+        style={isInSuperset && supersetStyles ? supersetStyles.leftBorder : undefined}
+      >
         <View className="flex-row justify-between items-center mb-2">
           <Text className={workout.exerciseName}>
             {item.exerciseDetails?.name || t('general.unknownExercise')}
           </Text>
           <View className="flex-row">
+            <TouchableOpacity
+              className="bg-blue-500 p-2 rounded mr-2"
+              onPress={() => handleOpenSupersetDialog(item)}
+            >
+              <Feather name="link" size={16} color="white" />
+            </TouchableOpacity>
             <TouchableOpacity
               className="bg-red-500 p-2 rounded"
               onPress={() => handleDeleteExercise(item.id)}
@@ -232,14 +333,14 @@ export default function RoutineIdScreen() {
               <TextInput
                 className={workout.setInput}
                 keyboardType="numeric"
-                value={setItem.reps?.toString() || ''}
+                value={getInputValue(setItem.id, 'reps', setItem.reps)}
                 onChangeText={(text) => handleSetChange(setItem.id, 'reps', text ? Number(text) : null)}
               />
 
               <TextInput
                 className={workout.setInput}
                 keyboardType="numeric"
-                value={setItem.weight?.toString() || ''}
+                value={getInputValue(setItem.id, 'weight', setItem.weight)}
                 onChangeText={(text) => handleSetChange(setItem.id, 'weight', text ? Number(text) : null)}
               />
 

@@ -229,7 +229,8 @@
     "calf_left": "Left Calf (cm)",
     "calf_right": "Right Calf (cm)",
     "addButton": "Add Measurement",
-    "noData": "No body measurements found."
+    "noData": "No body measurements found.",
+    "historyTitle": "Body Measurements History"
   },
   "database": {
     "exportButton": "Export Database",

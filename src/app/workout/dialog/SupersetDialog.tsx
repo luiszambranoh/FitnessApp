@@ -47,8 +47,7 @@ export default function SupersetDialog({
       if (isWorkoutMode) {
         fetchedSupersets = await SupersetService.getByWorkoutId(contextId);
       } else {
-        // Assumes SupersetService.getByRoutineId exists
-        fetchedSupersets = await (SupersetService as any).getByRoutineId(contextId);
+        fetchedSupersets = await SupersetService.getByRoutineId(contextId);
       }
       setSupersets(fetchedSupersets);
     } catch (error) {
@@ -68,8 +67,7 @@ export default function SupersetDialog({
       if (isWorkoutMode) {
         newSupersetId = await SupersetService.createWithAutoNumber(contextId, newSupersetName.trim());
       } else {
-        // Assumes SupersetService.createWithAutoNumberForRoutine exists
-        newSupersetId = await (SupersetService as any).createWithAutoNumberForRoutine(contextId, newSupersetName.trim());
+        newSupersetId = await SupersetService.createWithAutoNumberForRoutine(contextId, newSupersetName.trim());
       }
 
       if (newSupersetId) {
@@ -189,3 +187,4 @@ export default function SupersetDialog({
     </BottomSheetDialog>
   );
 }
+

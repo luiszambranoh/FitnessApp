@@ -27,7 +27,7 @@ import { useCrud } from "../../../hooks/useCrud";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), delay);
@@ -57,12 +57,10 @@ export default function RoutineIdScreen() {
   const routineExerciseService = useMemo(() => ({
     getAll: () => RoutineService.getExercisesByRoutineId(routineIdNum),
     getById: async (id: number) => {
-      // This service is for a list, getting a single item might need more context
-      // or a dedicated method in RoutineService. Returning null as a placeholder.
       const exercises = await RoutineService.getExercisesByRoutineId(routineIdNum);
       return exercises.find(e => e.id === id) || null;
     },
-    add: async (data: NewRoutineExercise) => RoutineService.addRoutineExercise(data),
+    add: (data: NewRoutineExercise) => RoutineService.addExercise(data),
     update: (item: RoutineExerciseRow) => RoutineService.updateExercise(item),
     delete: (id: number) => RoutineService.removeExercise(id),
   }), [routineIdNum]);

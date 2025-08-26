@@ -225,7 +225,8 @@
     "calf_left": "Pantorrilla Izquierda (cm)",
     "calf_right": "Pantorrilla Derecha (cm)",
     "addButton": "Añadir Medida",
-    "noData": "No se encontraron medidas corporales."
+    "noData": "No se encontraron medidas corporales.",
+    "historyTitle": "Historial"
   },
   "database": {
     "exportButton": "Exportar Base de Datos",

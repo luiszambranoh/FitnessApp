@@ -9,4 +9,5 @@ Long term:
 - weight, height, muscle measures, age, sex
 - Analyze the data
 [] - Diet measures
+[] - Add presets for routines and documentation about each exercise
 - Macro nutrients neccesary based on the body measurements

@@ -237,9 +237,8 @@ export class SupersetService {
     return DatabaseHelper.query<SupersetRow>(query, [workoutId]);
   }
 
-  // Create superset with auto-generated number
+  // Create superset with auto-generated number for a workout
   static async createWithAutoNumber(workoutId: number, note: string): Promise<number | null> {
-    // Get the highest number for this workout's supersets
     const query = `
       SELECT MAX(s.number) as max_number 
       FROM supersets s
@@ -247,6 +246,32 @@ export class SupersetService {
       WHERE se.session_id = ?
     `;
     const results = await DatabaseHelper.query<{max_number: number | null}>(query, [workoutId]);
+    const nextNumber = (results[0]?.max_number || 0) + 1;
+    
+    return this.add({ number: nextNumber, note });
+  }
+
+  // Get supersets for a specific routine
+  static async getByRoutineId(routineId: number): Promise<SupersetRow[]> {
+    const query = `
+      SELECT DISTINCT s.* 
+      FROM supersets s
+      JOIN routine_exercises re ON s.id = re.superset_id
+      WHERE re.routine_id = ?
+      ORDER BY s.number ASC
+    `;
+    return DatabaseHelper.query<SupersetRow>(query, [routineId]);
+  }
+
+  // Create superset with auto-generated number for a routine
+  static async createWithAutoNumberForRoutine(routineId: number, note: string): Promise<number | null> {
+    const query = `
+      SELECT MAX(s.number) as max_number 
+      FROM supersets s
+      JOIN routine_exercises re ON s.id = re.superset_id
+      WHERE re.routine_id = ?
+    `;
+    const results = await DatabaseHelper.query<{max_number: number | null}>(query, [routineId]);
     const nextNumber = (results[0]?.max_number || 0) + 1;
     
     return this.add({ number: nextNumber, note });

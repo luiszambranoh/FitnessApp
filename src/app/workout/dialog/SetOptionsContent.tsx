@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { SetType } from '../database/types/dbTypes';
-import { form } from '../styles/theme';
+import { SetType } from '../../../database/types/dbTypes';
+import { form } from '../../../styles/theme';
 import { useTranslation } from 'react-i18next';
 
 interface SetOptionsContentProps {

@@ -18,9 +18,9 @@ import {
   SetType,
   SupersetRow,
 } from "../../database/types/dbTypes";
-import SetOptionsContent from "../../components/SetOptionsContent";
+import SetOptionsContent from "./dialog/SetOptionsContent";
 import BottomSheetDialog from "../../components/BottomSheetDialog";
-import SupersetDialog from "../../components/SupersetDialog";
+import SupersetDialog from "./dialog/SupersetDialog";
 import { getSupersetStyles } from "../../utils/supersetColors";
 
 // Debounce utility function
@@ -280,7 +280,6 @@ export default function WorkoutID() {
 
   const handleSupersetAssigned = async (supersetId: number | null) => {
     if (!selectedExerciseForSuperset) return;
-
     try {
       const updatedExercise = { ...selectedExerciseForSuperset, superset_id: supersetId };
       await SessionExerciseService.update(updatedExercise);

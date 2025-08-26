@@ -48,8 +48,10 @@ export const schemaStatements = [
       note TEXT,
       routine_id INTEGER NOT NULL,
       exercise_id INTEGER NOT NULL,
+      superset_id INTEGER,
+      FOREIGN KEY(superset_id) REFERENCES supersets(id),
       FOREIGN KEY(routine_id) REFERENCES routines(id) ON DELETE CASCADE,
-      FOREIGN KEY(exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
+      FOREIGN KEY(exercise_id) REFERENCES exercises(id)
   )`,
   `CREATE TABLE IF NOT EXISTS routine_sets (
       id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,

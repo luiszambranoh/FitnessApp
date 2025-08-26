@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, TextInput, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Feather } from '@expo/vector-icons';
-import { form, layout } from '../styles/theme';
-import { SupersetService } from '../database/database';
-import { SupersetRow } from '../database/types/dbTypes';
-import BottomSheetDialog from './BottomSheetDialog';
+import { form, layout } from '../../../styles/theme';
+import { SupersetService } from '../../../database/database';
+import { SupersetRow } from '../../../database/types/dbTypes';
+import BottomSheetDialog from '../../../components/BottomSheetDialog';
 
 interface SupersetDialogProps {
   isVisible: boolean;
   onClose: () => void;
-  workoutId: number;
+  workoutId?: number;
+  routineId?: number;
   sessionExerciseId: number;
   currentSupersetId?: number | null;
   onSupersetAssigned: (supersetId: number | null) => void;
@@ -20,6 +21,7 @@ export default function SupersetDialog({
   isVisible,
   onClose,
   workoutId,
+  routineId,
   sessionExerciseId,
   currentSupersetId,
   onSupersetAssigned,
@@ -29,16 +31,26 @@ export default function SupersetDialog({
   const [isCreatingSuperset, setIsCreatingSuperset] = useState(false);
   const [newSupersetName, setNewSupersetName] = useState('');
 
+  const contextId = workoutId || routineId;
+  const isWorkoutMode = !!workoutId;
+
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && contextId) {
       fetchSupersets();
     }
-  }, [isVisible, workoutId]);
+  }, [isVisible, contextId]);
 
   const fetchSupersets = async () => {
+    if (!contextId) return;
     try {
-      const workoutSupersets = await SupersetService.getByWorkoutId(workoutId);
-      setSupersets(workoutSupersets);
+      let fetchedSupersets: SupersetRow[] = [];
+      if (isWorkoutMode) {
+        fetchedSupersets = await SupersetService.getByWorkoutId(contextId);
+      } else {
+        // Assumes SupersetService.getByRoutineId exists
+        fetchedSupersets = await (SupersetService as any).getByRoutineId(contextId);
+      }
+      setSupersets(fetchedSupersets);
     } catch (error) {
       console.error('Error fetching supersets:', error);
       Alert.alert(t('general.error'), t('superset.fetchError'));
@@ -46,18 +58,24 @@ export default function SupersetDialog({
   };
 
   const handleCreateSuperset = async () => {
-    if (!newSupersetName.trim()) {
+    if (!newSupersetName.trim() || !contextId) {
       Alert.alert(t('general.error'), t('superset.validation.nameRequired'));
       return;
     }
 
     try {
-      const newSupersetId = await SupersetService.createWithAutoNumber(workoutId, newSupersetName.trim());
+      let newSupersetId: number | null = null;
+      if (isWorkoutMode) {
+        newSupersetId = await SupersetService.createWithAutoNumber(contextId, newSupersetName.trim());
+      } else {
+        // Assumes SupersetService.createWithAutoNumberForRoutine exists
+        newSupersetId = await (SupersetService as any).createWithAutoNumberForRoutine(contextId, newSupersetName.trim());
+      }
+
       if (newSupersetId) {
         setNewSupersetName('');
         setIsCreatingSuperset(false);
         await fetchSupersets(); // Refresh the list
-        // Auto-assign to the newly created superset
         onSupersetAssigned(newSupersetId);
         onClose();
       } else {
@@ -95,7 +113,6 @@ export default function SupersetDialog({
       <View className="p-4">
         <Text className={layout.title}>{t('superset.manageTitle')}</Text>
         
-        {/* Current superset status */}
         {currentSupersetId && (
           <View className="mb-4 p-3 bg-blue-100 rounded-lg">
             <Text className="text-blue-800 font-semibold">
@@ -112,7 +129,6 @@ export default function SupersetDialog({
           </View>
         )}
 
-        {/* Create new superset */}
         {!isCreatingSuperset ? (
           <TouchableOpacity
             className={form.button}
@@ -150,10 +166,9 @@ export default function SupersetDialog({
           </View>
         )}
 
-        {/* Existing supersets */}
         {supersets.length > 0 && (
-          <View>
-            <Text className="text-lg font-semibold mb-2 text-gray-700">
+          <View className="mt-4">
+            <Text className="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-200">
               {t('superset.existingSupersets')}
             </Text>
             <FlatList

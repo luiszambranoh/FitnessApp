@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
+import Input from '../../components/Input';
 import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { layout, form, list } from '../../styles/theme';
@@ -83,16 +84,16 @@ export default function RoutinesScreen() {
       return (
         <View className={`${list.itemContainer} justify-between`}>
             <View className="flex-1">
-                <TextInput
+                <Input
                     value={newRoutineName}
                     onChangeText={setNewRoutineName}
                     className={form.textInput}
                     autoFocus
                 />
-                <TextInput
+                <Input
                     value={newRoutineNote || ''}
                     onChangeText={setNewRoutineNote}
-                    className={`${form.textInput} dark:placeholder:bg-white`}
+                    className={form.textInput}
                     placeholder={t('routines.notePlaceholder')}
                 />
             </View>

@@ -80,7 +80,7 @@ export default function ExerciseDetailsScreen() {
             <View className={table.headerContainer}>
               <Text className={`${table.headerText} flex-1`}>Reps</Text>
               <Text className={`${table.headerText} flex-1`}>Weight (kg)</Text>
-              <Text className={`${table.headerText} flex-1`}>Date</Text>
+              <Text className={`${table.headerText} flex-1`}>{t('common.date')}</Text>
             </View>
             {bestSets.map((set, index) => (
               <View key={index} className={table.rowContainer}>

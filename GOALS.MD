@@ -1,6 +1,5 @@
 Short term:
-[] Improve exercise page, edit exercise, and select exercise card
-[] show better the exercise card for workouts, like time when are isometric exercises, and so on. 
+[] Show the last set in the exercise card to have an idea what you did before
 
 
 Long term:
@@ -9,4 +8,5 @@ Long term:
 - weight, height, muscle measures, age, sex
 - Analyze the data
 [] - Diet measures
+[] - Add presets for routines and documentation about each exercise
 - Macro nutrients neccesary based on the body measurements

@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "expo": "^53.0.22",
+    "expo-checkbox": "^4.1.4",
     "expo-constants": "~17.1.7",
     "expo-document-picker": "^13.1.6",
     "expo-file-system": "^18.1.11",

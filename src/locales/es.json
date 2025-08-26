@@ -53,7 +53,7 @@
     "developing": "En desarrollo",
     "error": "Error",
     "success": "Éxito",
-    
+    "search": "Buscar...",
     "unknownCountingType": "Tipo de Conteo Desconocido",
     "noData": "N/D"
   },
@@ -71,7 +71,10 @@
   "common": {
     "unknownExercise": "Ejercicio Desconocido",
     "cancel": "Cancelar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "reps": "Reps",
+    "weightKg": "Peso (kg)",
+    "date": "Fecha"
   },
   "workout": {
     "title": "Entrenamiento",
@@ -111,7 +114,9 @@
     "addExercise": "Agregar Ejercicio",
     "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!",
     "actions": "Acciones",
-    "superset": "Superserie"
+    "superset": "Superserie",
+    "lastRepsHint": "Últimas Reps",
+    "lastWeightHint": "Último Peso"
   },
   "workoutScreen": {
     "invalidId": "ID de Entrenamiento inválido.",
@@ -225,7 +230,8 @@
     "calf_left": "Pantorrilla Izquierda (cm)",
     "calf_right": "Pantorrilla Derecha (cm)",
     "addButton": "Añadir Medida",
-    "noData": "No se encontraron medidas corporales."
+    "noData": "No se encontraron medidas corporales.",
+    "historyTitle": "Historial"
   },
   "database": {
     "exportButton": "Exportar Base de Datos",

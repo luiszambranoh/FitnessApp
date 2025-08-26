@@ -10,6 +10,7 @@
     "language": "Language",
     "bodyData": "Body Data",
     "routine": "Routine",
+    "routines": "Routines",
     "database": "Database",
     "databaseTitle": "Database Management"
   },
@@ -54,7 +55,8 @@
     "error": "Error",
     "success": "Success",
     "unknownCountingType": "Unknown Counting Type",
-    "noData": "N/A"
+    "noData": "N/A",
+    "search": "Search..."
   },
   "exerciseDetails": {
     "loadError": "Failed to load exercise details.",
@@ -70,7 +72,10 @@
   "common": {
     "unknownExercise": "Unknown Exercise",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "reps": "Reps",
+    "weightKg": "Weight (kg)",
+    "date": "Date"
   },
   "workout": {
     "title": "Workout",
@@ -107,7 +112,10 @@
     "addExercise": "Add Exercise",
     "noExercisesAdded": "No exercises added yet. Click the button above to add one!",
     "actions": "Actions",
-    "superset": "Superset"
+    "superset": "Superset",
+    "lastRepsHint": "Last Reps",
+    "lastWeightHint": "Last Weight",
+    "lastStats": "Last"
   },
   "workoutDetails": {
     "invalidWorkoutId": "Invalid Workout ID.",
@@ -229,7 +237,8 @@
     "calf_left": "Left Calf (cm)",
     "calf_right": "Right Calf (cm)",
     "addButton": "Add Measurement",
-    "noData": "No body measurements found."
+    "noData": "No body measurements found.",
+    "historyTitle": "Body Measurements History"
   },
   "database": {
     "exportButton": "Export Database",
@@ -277,5 +286,13 @@
       "dropSet": "Dropset",
       "deleteSet": "Delete Set",
       "cancel": "Cancel"
+    }
+,
+    "routine": {
+      "detailsTitle": "Routine Details",
+      "addExerciseTitle": "Add Exercise to Routine"
+    },
+    "exercise": {
+      "detailsTitle": "Exercise Details"
     }
 }

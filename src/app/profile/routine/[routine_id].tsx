@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { View, Text, TouchableOpacity, FlatList, Alert, TextInput, useColorScheme } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -17,15 +17,17 @@ import {
   SetType,
   RoutineRow,
   SupersetRow,
+  NewRoutineExercise,
 } from "../../../database/types/dbTypes";
-import SetOptionsContent from "../../../components/SetOptionsContent";
+import SetOptionsContent from "../../workout/dialog/SetOptionsContent";
 import BottomSheetDialog from "../../../components/BottomSheetDialog";
-import SupersetDialog from "../../../components/SupersetDialog";
+import SupersetDialog from "../../workout/dialog/SupersetDialog";
 import { getSupersetStyles } from "../../../utils/supersetColors";
+import { useCrud } from "../../../hooks/useCrud";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), delay);
@@ -44,7 +46,7 @@ export default function RoutineIdScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [routine, setRoutine] = useState<RoutineRow | null>(null);
-  const [routineExercises, setRoutineExercises] = useState<FullRoutineExercise[]>([]);
+  const [fullRoutineExercises, setFullRoutineExercises] = useState<FullRoutineExercise[]>([]);
   const [selectedSet, setSelectedSet] = useState<RoutineSetRow | null>(null);
   const [selectedExerciseForSuperset, setSelectedExerciseForSuperset] = useState<FullRoutineExercise | null>(null);
   const [groupedExercises, setGroupedExercises] = useState<{superset?: SupersetRow; exercises: FullRoutineExercise[]}[]>([]);
@@ -52,34 +54,62 @@ export default function RoutineIdScreen() {
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const routineIdNum = Number(routine_id);
 
+  const routineExerciseService = useMemo(() => ({
+    getAll: () => RoutineService.getExercisesByRoutineId(routineIdNum),
+    getById: async (id: number) => {
+      const exercises = await RoutineService.getExercisesByRoutineId(routineIdNum);
+      return exercises.find(e => e.id === id) || null;
+    },
+    add: (data: NewRoutineExercise) => RoutineService.addExercise(data),
+    update: (item: RoutineExerciseRow) => RoutineService.updateExercise(item),
+    delete: (id: number) => RoutineService.removeExercise(id),
+  }), [routineIdNum]);
+
+  const { 
+    data: routineExercises, 
+    isLoading: isLoadingExercises, 
+    error: exercisesError, 
+    updateItem: updateRoutineExercise, 
+    deleteItem: deleteRoutineExercise,
+    refetch: refetchRoutineExercises
+  } = useCrud(routineExerciseService);
+
   const fetchRoutineDetails = useCallback(async () => {
     if (isNaN(routineIdNum)) return;
     try {
       const fetchedRoutine = await RoutineService.getById(routineIdNum);
       setRoutine(fetchedRoutine);
-
-      const fetchedRoutineExercises = await RoutineService.getExercisesByRoutineId(routineIdNum);
-      const fullRoutineExercises: FullRoutineExercise[] = await Promise.all(
-        fetchedRoutineExercises.map(async (re) => {
-          const exerciseDetails = await ExerciseService.getById(re.exercise_id);
-          const sets = await RoutineService.getSetsByRoutineExerciseId(re.id);
-          const supersetDetails = re.superset_id ? await SupersetService.getById(re.superset_id) : null; // Fetch superset details
-          return { ...re, exerciseDetails, sets, supersetDetails }; // Include superset details
-        })
-      );
-      setRoutineExercises(fullRoutineExercises);
-      
-      // Group exercises by superset
-      const grouped = groupExercisesBySuperset(fullRoutineExercises); // Use new grouping function
-      setGroupedExercises(grouped);
-      
-      // Clear input values when data is refreshed from server
-      setInputValues({}); // Clear input values
     } catch (error) {
       console.error("Error fetching routine details:", error);
       Alert.alert(t('general.error'), t('routines.loadFailed'));
     }
   }, [routineIdNum, t]);
+
+  useEffect(() => {
+    const enrichData = async () => {
+      if (!routineExercises) return;
+      try {
+        const enriched = await Promise.all(
+          routineExercises.map(async (re) => {
+            const exerciseDetails = await ExerciseService.getById(re.exercise_id);
+            const sets = await RoutineService.getSetsByRoutineExerciseId(re.id);
+            const supersetDetails = re.superset_id ? await SupersetService.getById(re.superset_id) : null;
+            return { ...re, exerciseDetails, sets, supersetDetails };
+          })
+        );
+        setFullRoutineExercises(enriched);
+      } catch (error) {
+        console.error("Error enriching routine exercises:", error);
+        Alert.alert(t('general.error'), 'Failed to load exercise details.');
+      }
+    };
+    enrichData();
+  }, [routineExercises, t]);
+
+  useEffect(() => {
+    const grouped = groupExercisesBySuperset(fullRoutineExercises);
+    setGroupedExercises(grouped);
+  }, [fullRoutineExercises]);
 
   useFocusEffect(
     useCallback(() => {
@@ -88,7 +118,8 @@ export default function RoutineIdScreen() {
         return;
       }
       fetchRoutineDetails();
-    }, [routineIdNum, fetchRoutineDetails, t])
+      refetchRoutineExercises();
+    }, [routineIdNum, fetchRoutineDetails, refetchRoutineExercises, t])
   );
 
   const handleAddExercise = () => {
@@ -107,7 +138,7 @@ export default function RoutineIdScreen() {
     try {
       const newSetId = await RoutineService.addSet(newSet);
       if (newSetId) {
-        fetchRoutineDetails();
+        refetchRoutineExercises();
       } else {
         Alert.alert(t('general.error'), t('routines.addSetFailed'));
       }
@@ -120,7 +151,7 @@ export default function RoutineIdScreen() {
   const updateSetInDb = async (updatedSet: RoutineSetRow) => {
     try {
       await RoutineService.updateSet(updatedSet);
-      fetchRoutineDetails();
+      refetchRoutineExercises();
     } catch (error) {
       console.error("Error updating set:", error);
       Alert.alert(t('routines.updateSetFailed'));
@@ -130,7 +161,7 @@ export default function RoutineIdScreen() {
   const debouncedUpdateSetInDb = useRef(debounce(updateSetInDb, 500)).current;
 
   const handleSetChange = (setId: number, field: keyof RoutineSetRow, value: string | number | null) => {
-    setRoutineExercises((prev) =>
+    setFullRoutineExercises((prev) =>
       prev.map((re) => ({
         ...re,
         sets: re.sets.map((set) => {
@@ -148,7 +179,7 @@ export default function RoutineIdScreen() {
   const handleRemoveSet = async (setId: number) => {
     try {
       await RoutineService.deleteSet(setId);
-      fetchRoutineDetails();
+      refetchRoutineExercises();
       setSelectedSet(null); // Close the dialog
     } catch (error) {
       console.error("Error removing set:", error);
@@ -158,18 +189,8 @@ export default function RoutineIdScreen() {
 
   const handleSetTypeChange = (newType: SetType) => {
     if (!selectedSet) return;
-
     const updatedSet = { ...selectedSet, set_type: newType };
-
-    setRoutineExercises((prev) =>
-      prev.map((re) => ({
-        ...re,
-        sets: re.sets.map((set) => (set.id === selectedSet.id ? updatedSet : set)),
-      }))
-    );
-
     updateSetInDb(updatedSet);
-    fetchRoutineDetails();
     setSelectedSet(null); // Close the dialog
   };
 
@@ -193,7 +214,6 @@ export default function RoutineIdScreen() {
       }
     });
 
-    // Add superset groups (sorted by superset number)
     const sortedSupersets = Array.from(supersetMap.entries()).sort(
       (a, b) => (a[1][0]?.supersetDetails?.number || 0) - (b[1][0]?.supersetDetails?.number || 0)
     );
@@ -201,11 +221,10 @@ export default function RoutineIdScreen() {
     sortedSupersets.forEach(([supersetId, exercises]) => {
       grouped.push({
         superset: exercises[0].supersetDetails!,
-        exercises: exercises.sort((a, b) => a.id - b.id) // Sort exercises within superset by creation order
+        exercises: exercises.sort((a, b) => a.id - b.id)
       });
     });
 
-    // Add non-superset exercises
     noSupersetExercises.forEach(exercise => {
       grouped.push({ exercises: [exercise] });
     });
@@ -224,8 +243,7 @@ export default function RoutineIdScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await RoutineService.removeExercise(routineExerciseId);
-              fetchRoutineDetails();
+              await deleteRoutineExercise(routineExerciseId);
             } catch (error) {
               console.error('Error deleting exercise:', error);
               Alert.alert(t('general.error'), 'Failed to delete exercise');
@@ -242,15 +260,14 @@ export default function RoutineIdScreen() {
 
   const handleSupersetAssigned = async (supersetId: number | null) => {
     if (!selectedExerciseForSuperset) return;
-
     try {
-      const updatedExercise = { ...selectedExerciseForSuperset, superset_id: supersetId };
-      await RoutineService.updateExercise(updatedExercise); // Use RoutineService.updateExercise
+      const { sets, exerciseDetails, supersetDetails, ...exerciseToUpdate } = selectedExerciseForSuperset;
+      const updatedExercise = { ...exerciseToUpdate, superset_id: supersetId };
+      await updateRoutineExercise(updatedExercise);
       setSelectedExerciseForSuperset(null);
-      fetchRoutineDetails();
     } catch (error) {
       console.error('Error updating superset:', error);
-      Alert.alert(t('general.error'), 'Failed to update superset'); // TODO: Add i18n key
+      Alert.alert(t('general.error'), 'Failed to update superset');
     }
   };
 
@@ -270,7 +287,6 @@ export default function RoutineIdScreen() {
 
   const getInputValue = (setId: number, field: keyof RoutineSetRow, dbValue: number | null) => {
     const inputKey = getInputKey(setId, field);
-    // Use local input value if it exists, otherwise use database value
     if (inputValues.hasOwnProperty(inputKey)) {
       return inputValues[inputKey];
     }
@@ -286,10 +302,12 @@ export default function RoutineIdScreen() {
         className={`${workout.exerciseBlockContainer} ${isInSuperset ? 'ml-4' : ''}`}
         style={isInSuperset && supersetStyles ? supersetStyles.leftBorder : undefined}
       >
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className={workout.exerciseName}>
-            {item.exerciseDetails?.name || t('general.unknownExercise')}
-          </Text>
+        <View className="flex-row items-center mb-2">
+          <View className="flex-1 pr-2">
+            <Text className={workout.exerciseName}>
+              {item.exerciseDetails?.name || t('general.unknownExercise')}
+            </Text>
+          </View>
           <View className="flex-row">
             <TouchableOpacity
               className="bg-blue-500 p-2 rounded mr-2"
@@ -319,7 +337,7 @@ export default function RoutineIdScreen() {
             normalSetCounter++;
             setLabel = `${normalSetCounter}`;
           } else {
-            setLabel = setItem.set_type.charAt(0).toUpperCase(); // W for Warm-up, D for Dropset
+            setLabel = setItem.set_type.charAt(0).toUpperCase();
           }
 
           return (
@@ -346,7 +364,7 @@ export default function RoutineIdScreen() {
               />
 
               <TouchableOpacity
-                className={workout.setCheckButton} // Re-using for options
+                className={workout.setCheckButton}
                 onPress={() => handleOpenSetOptions(setItem)}
               >
                 <Feather name="more-vertical" size={24} color="gray" />
@@ -371,27 +389,29 @@ export default function RoutineIdScreen() {
     const isCollapsed = supersetId ? collapsedSupersets.has(supersetId) : false;
     const supersetStyles = supersetId ? getSupersetStyles(supersetId, isDark) : null;
 
+    if (isSuperset && !item.superset) return null;
+
     return (
       <View className="mb-4">
         {isSuperset && item.superset && (
           <TouchableOpacity
             onPress={() => toggleSupersetCollapse(item.superset!.id)}
-            className={`flex-row items-center p-3 rounded-t-lg ${supersetStyles?.headerBackground}`}
+            className="p-3 rounded-t-lg flex-row justify-between items-center"
+            style={supersetStyles?.headerContainer}
           >
-            <Feather
-              name={isCollapsed ? "chevron-down" : "chevron-up"}
-              size={20}
-              color={supersetStyles?.headerText}
-              className="mr-2"
-            />
-            <Text className={`font-bold text-lg ${supersetStyles?.headerText}`}>
-              {t('workout.superset')} {item.superset.number}
+            <Text className="font-bold text-lg flex-1" style={supersetStyles?.headerText}>
+              {t('superset.supersetNumber', { number: item.superset.number })}: {item.superset.note}
             </Text>
+            <Feather 
+              name={isCollapsed ? "chevron-down" : "chevron-up"} 
+              size={20} 
+              color={supersetStyles?.headerText.color} 
+            />
           </TouchableOpacity>
         )}
 
         {!isCollapsed && (
-          <View className={isSuperset ? `rounded-b-lg overflow-hidden ${supersetStyles?.bodyBackground}` : ''}>
+          <View className={isSuperset ? `p-2 rounded-b-lg ${supersetStyles?.contentContainer}` : ''}>
             {item.exercises.map((exercise, index) => (
               <View key={exercise.id} className={isSuperset && index > 0 ? 'mt-2' : ''}>
                 {renderExerciseBlock(exercise, isSuperset, supersetId)}
@@ -413,14 +433,19 @@ export default function RoutineIdScreen() {
         <Text className={form.buttonText}>{t('routines.addExercise')}</Text>
       </TouchableOpacity>
 
+      {isLoadingExercises && <Text>Loading exercises...</Text>}
+      {exercisesError && <Text>{t('general.error')}: {exercisesError}</Text>}
+
       <FlatList
         data={groupedExercises}
         keyExtractor={(item) => `group-${item.superset?.id || item.exercises[0].id}`}
         renderItem={renderGroupedExercises}
         ListEmptyComponent={
-          <Text className={workout.noExercisesText}>
-            {t('routines.noExercises')}
-          </Text>
+          !isLoadingExercises ? (
+            <Text className={workout.noExercisesText}>
+              {t('routines.noExercises')}
+            </Text>
+          ) : null
         }
       />
 
@@ -436,6 +461,17 @@ export default function RoutineIdScreen() {
             currentType={selectedSet.set_type}
           />
         </BottomSheetDialog>
+      )}
+
+      {selectedExerciseForSuperset && (
+        <SupersetDialog
+          isVisible={selectedExerciseForSuperset !== null}
+          onClose={() => setSelectedExerciseForSuperset(null)}
+          routineId={routineIdNum}
+          sessionExerciseId={selectedExerciseForSuperset.id}
+          currentSupersetId={selectedExerciseForSuperset.superset_id}
+          onSupersetAssigned={handleSupersetAssigned}
+        />
       )}
     </View>
   );

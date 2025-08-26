@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import Input from '../../../components/Input';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { layout, form } from '../../../styles/theme';
@@ -34,14 +35,14 @@ export default function CreateRoutineScreen() {
     <View className={layout.container}>
       <Text className={layout.title}>{t('routines.createTitle')}</Text>
 
-      <TextInput
+      <Input
         className={form.textInput}
         placeholder={t('routines.namePlaceholder')}
         value={name}
         onChangeText={setName}
       />
 
-      <TextInput
+      <Input
         className={form.textInput}
         placeholder={t('routines.notePlaceholder')}
         value={note}

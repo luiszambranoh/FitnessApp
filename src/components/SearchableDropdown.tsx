@@ -1,82 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, Text, TouchableOpacity } from 'react-native';
-import { form, dropdown } from '../styles/theme';
-
-export interface DropdownItem {
-  label: string;
-  value: any;
-}
+import React from 'react';
+import { View } from 'react-native';
+import Input from './Input';
+import { form } from '../styles/theme';
 
 interface SearchableDropdownProps {
-  data: DropdownItem[];
-  value: any; // The selected value (ID)
-  onChange: (value: any) => void; // Function to call when an item is selected
-  placeholder?: string;
+  onSearch: (query: string) => void;
+  placeholder: string;
 }
 
-export default function SearchableDropdown({ data, value, onChange, placeholder }: SearchableDropdownProps) {
-  const [inputValue, setInputValue] = useState('');
-  const [filteredData, setFilteredData] = useState<DropdownItem[]>([]);
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
-
-  useEffect(() => {
-    if (value) {
-      const selectedItem = data.find(item => item.value === value);
-      if (selectedItem) {
-        setInputValue(selectedItem.label);
-      }
-    } else {
-      setInputValue('');
-    }
-  }, [value, data]);
-
-  const handleInputChange = (text: string) => {
-    setInputValue(text);
-    if (text) {
-      const filtered = data.filter(item =>
-        item.label.toLowerCase().includes(text.toLowerCase())
-      );
-      setFilteredData(filtered);
-      setDropdownVisible(true);
-    } else {
-      setFilteredData([]);
-      setDropdownVisible(false);
-    }
-  };
-
-  const handleSelectItem = (item: DropdownItem) => {
-    setInputValue(item.label);
-    onChange(item.value);
-    setDropdownVisible(false);
-  };
-
+const SearchableDropdown: React.FC<SearchableDropdownProps> = ({ onSearch, placeholder }) => {
   return (
-    <View style={{ zIndex: 1 }}>
-      <TextInput
+    <View className="mb-4">
+      <Input
         className={form.textInput}
-        placeholder={placeholder || 'Search...'}
-        placeholderTextColor="#9CA3AF"
-        value={inputValue}
-        onChangeText={handleInputChange}
-        onFocus={() => setDropdownVisible(true)}
+        placeholder={placeholder}
+        onChangeText={onSearch}
       />
-      {isDropdownVisible && filteredData.length > 0 && (
-        <View className={dropdown.container}>
-          <FlatList
-            data={filteredData}
-            keyExtractor={(item) => String(item.value)}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                className={dropdown.item}
-                onPress={() => handleSelectItem(item)}
-              >
-                <Text className={dropdown.itemText}>{item.label}</Text>
-              </TouchableOpacity>
-            )}
-            keyboardShouldPersistTaps="handled"
-          />
-        </View>
-      )}
     </View>
   );
-}
+};
+
+export default SearchableDropdown;

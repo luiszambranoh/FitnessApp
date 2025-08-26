@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Alert, FlatList } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { SessionExerciseService, ExerciseService } from "../../../database/database";
 import { NewSessionExercise, ExerciseRow } from "../../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
 import { layout, form, fixed } from "../../../styles/theme";
 import ExerciseCard from "../../../components/ExerciseCard";
+import SearchableDropdown from "../../../components/SearchableDropdown";
 
 export default function AddExercise() {
   const { workout_id } = useLocalSearchParams();
   const [allExercises, setAllExercises] = useState<ExerciseRow[]>([]);
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         const fetchedExercises = await ExerciseService.getAll();
-        
-        // Get already added exercises to filter them out
         if (workout_id) {
           const sessionExercises = await SessionExerciseService.getBySessionId(Number(workout_id));
           const addedExerciseIds = new Set(sessionExercises.map(se => se.exercise_id));
@@ -51,7 +51,7 @@ export default function AddExercise() {
       return;
     }
     if (selectedExerciseIds.length === 0) {
-      Alert.alert(t('general.error'), t('addExercise.selectExercise')); // Using new translation key
+      Alert.alert(t('general.error'), t('addExercise.selectExercise'));
       return;
     }
 
@@ -65,7 +65,7 @@ export default function AddExercise() {
         };
         await SessionExerciseService.add(newSessionExercise);
       }
-      Alert.alert(t('general.success'), t('addExercise.success')); // Using general.success
+      Alert.alert(t('general.success'), t('addExercise.success'));
       router.back();
     } catch (error) {
       console.error("Error adding session exercises:", error);
@@ -73,10 +73,18 @@ export default function AddExercise() {
     }
   };
 
-  const selectedExercises = allExercises.filter((exercise) =>
-    selectedExerciseIds.includes(exercise.id)
+  const filteredExercises = allExercises.filter(exercise =>
+    exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const availableExercises = allExercises;
+
+  const sortedExercises = [...filteredExercises].sort((a, b) => {
+    const aIsSelected = selectedExerciseIds.includes(a.id);
+    const bIsSelected = selectedExerciseIds.includes(b.id);
+    if (aIsSelected === bIsSelected) {
+      return a.name.localeCompare(b.name);
+    }
+    return aIsSelected ? -1 : 1;
+  });
 
   const renderExerciseCard = ({ item }: { item: ExerciseRow }) => (
     <ExerciseCard
@@ -89,36 +97,15 @@ export default function AddExercise() {
   return (
     <View className={`${layout.container} pb-20`}>
       <Text className={layout.title}>{t('addExercise.title')}</Text>
-
-      {selectedExercises.length > 0 && (
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t('addExercise.selectedExercisesTitle')}</Text>
-          <FlatList
-            data={selectedExercises}
-            keyExtractor={(item) => `selected-${item.id.toString()}`}
-            renderItem={({ item }) => (
-              <View style={{ width: 250, marginRight: 10 }}>
-                <ExerciseCard
-                  exercise={item}
-                  isSelected={selectedExerciseIds.includes(item.id)}
-                  onSelect={toggleExerciseSelection}
-                />
-              </View>
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={true}
-          />
-        </View>
-      )}
-
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>{t('addExercise.allExercisesTitle')}</Text>
-        <FlatList
-          data={availableExercises}
-          keyExtractor={(item) => `all-${item.id.toString()}`}
-          renderItem={renderExerciseCard}
-        />
-      </View>
+      <SearchableDropdown
+        onSearch={setSearchQuery}
+        placeholder={t('general.search')}
+      />
+      <FlatList
+        data={sortedExercises}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderExerciseCard}
+      />
 
       {selectedExerciseIds.length > 0 && (
         <View className={fixed.bottomButtonContainer}>
@@ -135,15 +122,3 @@ export default function AddExercise() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333', // Adjust based on theme
-  },
-});

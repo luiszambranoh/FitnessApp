@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity, TextInput, ScrollView, Platform } from 'react-native';
+import { View, Text, FlatList, Alert, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import Input from '../../components/Input';
 import { useTranslation } from 'react-i18next';
 import { BodyMeasurementService } from '../../database/database';
 import { BodyMeasurementRow, NewBodyMeasurement } from '../../database/types/dbTypes';
 import { FontAwesome } from '@expo/vector-icons';
-import { getCurrentDateTime } from '../../database/utils/datetime';
 import { useColorScheme } from 'nativewind';
+import { getCurrentDateTime } from '../../database/utils/datetime';
 
 const initialFormState: NewBodyMeasurement = {
     date: getCurrentDateTime().date,
@@ -27,17 +28,14 @@ const initialFormState: NewBodyMeasurement = {
 
 // A helper component for form inputs to reduce repetition
 const FormInput = ({ label, value, onChangeText, unit, keyboardType = 'numeric' }: any) => {
-    const { colorScheme } = useColorScheme();
-    const placeholderTextColor = colorScheme === 'dark' ? '#A0A0A0' : '#C0C0C0';
 
     return (
         <View className="mb-4">
             <Text className="text-base text-gray-600 dark:text-gray-300 mb-2">{label}</Text>
             <View className="flex-row items-center">
-                <TextInput
+                <Input
                     className="flex-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-gray-900 dark:text-white"
                     placeholder={label}
-                    placeholderTextColor={placeholderTextColor}
                     keyboardType={keyboardType}
                     value={value ? value.toString() : ''}
                     onChangeText={onChangeText}

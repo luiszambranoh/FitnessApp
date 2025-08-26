@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
+import Input from '../../../components/Input';
 import { useTranslation } from 'react-i18next';
 import { Feather } from '@expo/vector-icons';
 import { form, layout } from '../../../styles/theme';
@@ -137,7 +138,7 @@ export default function SupersetDialog({
           </TouchableOpacity>
         ) : (
           <View className="mb-4 p-3 bg-gray-100 rounded-lg">
-            <TextInput
+            <Input
               className={form.textInput}
               placeholder={t('superset.supersetNamePlaceholder')}
               value={newSupersetName}
@@ -187,4 +188,5 @@ export default function SupersetDialog({
     </BottomSheetDialog>
   );
 }
+
 

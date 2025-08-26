@@ -25,7 +25,7 @@ import { getSupersetStyles } from "../../../utils/supersetColors";
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), delay);
@@ -100,6 +100,7 @@ export default function WorkoutID() {
       reps: null,
       completed: 0,
       note: null,
+      date: undefined
     };
     try {
       const newSetId = await SetService.add(newSet);
@@ -167,20 +168,52 @@ export default function WorkoutID() {
     return dbValue?.toString() || '';
   };
 
-  const handleCompleteSet = (setId: number) => {
-    setSessionExercises((prev) =>
-      prev.map((se) => ({
+  const handleCompleteSet = async (setId: number) => {
+    try {
+      // Find the set and its current completed status
+      const currentSessionExercise = sessionExercises.find(se => se.sets.some(s => s.id === setId));
+      const currentSet = currentSessionExercise?.sets.find(s => s.id === setId);
+
+      if (!currentSet) return;
+
+      const newCompletedStatus = currentSet.completed === 1 ? 0 : 1;
+
+      // Optimistically update local state for immediate feedback
+      const updatedSessionExercisesOptimistic = sessionExercises.map(se => ({
         ...se,
-        sets: se.sets.map((set) => {
-          if (set.id === setId) {
-            const updatedSet = { ...set, completed: set.completed === 1 ? 0 : 1 };
-            updateSetInDb(updatedSet);
-            return updatedSet;
-          }
-          return set;
-        }),
-      }))
-    );
+        sets: se.sets.map(set =>
+          set.id === setId ? { ...set, completed: newCompletedStatus } : set
+        )
+      }));
+      setSessionExercises(updatedSessionExercisesOptimistic);
+      setGroupedExercises(groupExercisesBySuperset(updatedSessionExercisesOptimistic)); // Update groupedExercises immediately
+
+      // Update database
+      await SetService.update({ ...currentSet, completed: newCompletedStatus });
+
+      // After successful DB update, re-fetch sets for this exercise to ensure consistency
+      if (currentSessionExercise) {
+        const updatedSets = await SetService.getBySessionExerciseId(currentSessionExercise.id);
+        const updatedSessionExercisesConfirmed = sessionExercises.map(se =>
+          se.id === currentSessionExercise.id ? { ...se, sets: updatedSets } : se
+        );
+        setSessionExercises(updatedSessionExercisesConfirmed);
+        setGroupedExercises(groupExercisesBySuperset(updatedSessionExercisesConfirmed)); // Update groupedExercises again
+      }
+
+    } catch (error) {
+      console.error("Error updating set:", error);
+      Alert.alert(t('general.error'), t('workoutDetails.failedToUpdateSet'));
+      // Revert optimistic update if DB update fails
+      const revertedSessionExercises = sessionExercises.map(se => ({
+        ...se,
+        sets: se.sets.map(set =>
+          set.id === setId ? { ...set, completed: set.completed === 1 ? 0 : 1 } : set // Revert to original
+        )
+      }));
+      setSessionExercises(revertedSessionExercises);
+      setGroupedExercises(groupExercisesBySuperset(revertedSessionExercises)); // Update groupedExercises on revert
+    }
   };
 
   const handleRemoveSet = async (setId: number) => {
@@ -312,10 +345,12 @@ export default function WorkoutID() {
         className={`${workout.exerciseBlockContainer} ${isInSuperset ? 'ml-4' : ''}`}
         style={isInSuperset && supersetStyles ? supersetStyles.leftBorder : undefined}
       >
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className={workout.exerciseName}>
-            {item.exerciseDetails?.name || t('general.unknownExercise')}
-          </Text>
+        <View className="flex-row items-center mb-2">
+          <View className="flex-1 pr-2">
+            <Text className={workout.exerciseName}>
+              {item.exerciseDetails?.name || t('general.unknownExercise')}
+            </Text>
+          </View>
           <View className="flex-row">
             <TouchableOpacity
               className="bg-blue-500 p-2 rounded mr-2"

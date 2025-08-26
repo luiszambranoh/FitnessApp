@@ -1,6 +1,5 @@
 Short term:
-[] Improve exercise page, edit exercise, and select exercise card
-[] show better the exercise card for workouts, like time when are isometric exercises, and so on. 
+[] Show the last set in the exercise card to have an idea what you did before
 
 
 Long term:

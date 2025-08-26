@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import Input from "../../../components/Input";
 import { useForm, Controller } from "react-hook-form";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -44,10 +45,9 @@ export default function CreateExercise() {
         control={control}
         rules={{ required: t('createExercise.validation.nameRequired') }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
+          <Input
             className={form.textInput}
             placeholder={t('createExercise.namePlaceholder')}
-            placeholderTextColor="#9CA3AF"
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -60,10 +60,9 @@ export default function CreateExercise() {
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
+          <Input
             className={form.textInput}
             placeholder={t('createExercise.notePlaceholder')}
-            placeholderTextColor="#9CA3AF"
             onBlur={onBlur}
             onChangeText={onChange}
             value={value || ""}

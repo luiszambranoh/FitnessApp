@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Alert, FlatList } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { RoutineService, ExerciseService } from "../../../../database/database";
 import { NewRoutineExercise, ExerciseRow } from "../../../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
 import { layout, form, fixed } from "../../../../styles/theme";
 import ExerciseCard from "../../../../components/ExerciseCard";
+import SearchableDropdown from "../../../../components/SearchableDropdown";
 
-export default function AddExerciseToRoutine() {
+export default function AddExercise() {
   const { routine_id } = useLocalSearchParams();
   const [allExercises, setAllExercises] = useState<ExerciseRow[]>([]);
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         const fetchedExercises = await ExerciseService.getAll();
-        
-        // Get already added exercises to filter them out
         if (routine_id) {
           const routineExercises = await RoutineService.getExercisesByRoutineId(Number(routine_id));
           const addedExerciseIds = new Set(routineExercises.map(re => re.exercise_id));
@@ -47,7 +47,7 @@ export default function AddExerciseToRoutine() {
 
   const handleAddExercises = async () => {
     if (!routine_id) {
-      Alert.alert(t('general.error'), t('routines.invalidId'));
+      Alert.alert(t('general.error'), t('addExercise.missingRoutineId'));
       return;
     }
     if (selectedExerciseIds.length === 0) {
@@ -61,6 +61,7 @@ export default function AddExerciseToRoutine() {
           routine_id: Number(routine_id),
           exercise_id: exerciseId,
           note: null,
+          superset_id: null,
         };
         await RoutineService.addExercise(newRoutineExercise);
       }
@@ -72,10 +73,18 @@ export default function AddExerciseToRoutine() {
     }
   };
 
-  const selectedExercises = allExercises.filter((exercise) =>
-    selectedExerciseIds.includes(exercise.id)
+  const filteredExercises = allExercises.filter(exercise =>
+    exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const availableExercises = allExercises;
+
+  const sortedExercises = [...filteredExercises].sort((a, b) => {
+    const aIsSelected = selectedExerciseIds.includes(a.id);
+    const bIsSelected = selectedExerciseIds.includes(b.id);
+    if (aIsSelected === bIsSelected) {
+      return a.name.localeCompare(b.name);
+    }
+    return aIsSelected ? -1 : 1;
+  });
 
   const renderExerciseCard = ({ item }: { item: ExerciseRow }) => (
     <ExerciseCard
@@ -87,28 +96,16 @@ export default function AddExerciseToRoutine() {
 
   return (
     <View className={`${layout.container} pb-20`}>
-      <Text className={layout.title}>{t('addExercise.titleRoutine')} {routine_id}</Text>
-
-      {selectedExercises.length > 0 && (
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t('addExercise.selectedExercisesTitle')}</Text>
-          <FlatList
-            data={selectedExercises}
-            keyExtractor={(item) => `selected-${item.id.toString()}`}
-            renderItem={renderExerciseCard}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-      )}
-
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>{t('addExercise.allExercisesTitle')}</Text>
-        <FlatList
-          data={availableExercises}
-          keyExtractor={(item) => `all-${item.id.toString()}`}
-          renderItem={renderExerciseCard}
-        />
-      </View>
+      <Text className={layout.title}>{t('addExercise.title')}</Text>
+      <SearchableDropdown
+        onSearch={setSearchQuery}
+        placeholder={t('general.search')}
+      />
+      <FlatList
+        data={sortedExercises}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderExerciseCard}
+      />
 
       {selectedExerciseIds.length > 0 && (
         <View className={fixed.bottomButtonContainer}>
@@ -125,15 +122,3 @@ export default function AddExerciseToRoutine() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333', // Adjust based on theme
-  },
-});

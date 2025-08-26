@@ -302,10 +302,12 @@ export default function RoutineIdScreen() {
         className={`${workout.exerciseBlockContainer} ${isInSuperset ? 'ml-4' : ''}`}
         style={isInSuperset && supersetStyles ? supersetStyles.leftBorder : undefined}
       >
-        <View className="flex-row justify-between items-center mb-2">
-          <Text className={workout.exerciseName}>
-            {item.exerciseDetails?.name || t('general.unknownExercise')}
-          </Text>
+        <View className="flex-row items-center mb-2">
+          <View className="flex-1 pr-2">
+            <Text className={workout.exerciseName}>
+              {item.exerciseDetails?.name || t('general.unknownExercise')}
+            </Text>
+          </View>
           <View className="flex-row">
             <TouchableOpacity
               className="bg-blue-500 p-2 rounded mr-2"

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo, useEffect } from "react"; // Added useMemo, useEffect
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { View, Text, TouchableOpacity, FlatList, Alert, TextInput, useColorScheme } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ import SetOptionsContent from "../dialog/SetOptionsContent";
 import BottomSheetDialog from "../../../components/BottomSheetDialog";
 import SupersetDialog from "../dialog/SupersetDialog";
 import { getSupersetStyles } from "../../../utils/supersetColors";
+import { useCrud, CrudService } from "../../../hooks/useCrud"; // Import useCrud and CrudService
 
 // Debounce utility function
 const debounce = (func: Function, delay: number) => {
@@ -43,7 +44,7 @@ export default function WorkoutID() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const [sessionExercises, setSessionExercises] = useState<FullSessionExercise[]>([]);
+  // const [sessionExercises, setSessionExercises] = useState<FullSessionExercise[]>([]); // To be replaced by useCrud
   const [selectedSet, setSelectedSet] = useState<SetRow | null>(null);
   const [selectedExerciseForSuperset, setSelectedExerciseForSuperset] = useState<FullSessionExercise | null>(null);
   const [groupedExercises, setGroupedExercises] = useState<{superset?: SupersetRow; exercises: FullSessionExercise[]}[]>([]);
@@ -51,41 +52,90 @@ export default function WorkoutID() {
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const workoutIdNum = Number(workout_id);
 
-  const fetchWorkoutDetails = useCallback(async () => {
-    if (isNaN(workoutIdNum)) return;
-    try {
-      const fetchedSessionExercises = await SessionExerciseService.getBySessionId(workoutIdNum);
-      const fullSessionExercises: FullSessionExercise[] = await Promise.all(
-        fetchedSessionExercises.map(async (se) => {
-          const exerciseDetails = await ExerciseService.getById(se.exercise_id);
-          const sets = await SetService.getBySessionExerciseId(se.id);
-          const supersetDetails = se.superset_id ? await SupersetService.getById(se.superset_id) : null;
-          return { ...se, exerciseDetails, sets, supersetDetails };
-        })
-      );
-      setSessionExercises(fullSessionExercises);
-      
-      // Group exercises by superset
-      const grouped = groupExercisesBySuperset(fullSessionExercises);
-      setGroupedExercises(grouped);
-      
-      // Clear input values when data is refreshed from server
-      setInputValues({});
-    } catch (error) {
-      console.error("Error fetching workout details:", error);
-      Alert.alert(t('general.error'), t('workoutDetails.failedToLoad'));
-    }
-  }, [workoutIdNum, t]);
+  // Define the custom service for FullSessionExercise
+  const sessionExerciseCrudService = useMemo(() => {
+    return {
+      getAll: async () => {
+        if (isNaN(workoutIdNum)) return [];
+        const fetchedSessionExercises = await SessionExerciseService.getBySessionId(workoutIdNum);
+        const fullSessionExercises: FullSessionExercise[] = await Promise.all(
+          fetchedSessionExercises.map(async (se) => {
+            const exerciseDetails = await ExerciseService.getById(se.exercise_id);
+            const sets = await SetService.getBySessionExerciseId(se.id);
+            const supersetDetails = se.superset_id ? await SupersetService.getById(se.superset_id) : null;
+            return { ...se, exerciseDetails, sets, supersetDetails };
+          })
+        );
+        return fullSessionExercises;
+      },
+      getById: async (id: number) => {
+        const se = await SessionExerciseService.getById(id);
+        if (!se) return null;
+        const exerciseDetails = await ExerciseService.getById(se.exercise_id);
+        const sets = await SetService.getBySessionExerciseId(se.id);
+        const supersetDetails = se.superset_id ? await SupersetService.getById(se.superset_id) : null;
+        return { ...se, exerciseDetails, sets, supersetDetails };
+      },
+      add: async (data: SessionExerciseRow) => {
+        return SessionExerciseService.add(data);
+      },
+      update: async (item: FullSessionExercise) => {
+        const { exerciseDetails, sets, supersetDetails, ...sessionExerciseRow } = item;
+        return SessionExerciseService.update(sessionExerciseRow);
+      },
+      delete: async (id: number) => {
+        return SessionExerciseService.delete(id);
+      },
+    } as CrudService<FullSessionExercise, SessionExerciseRow>;
+  }, [workoutIdNum]);
 
+  // Define the service for SetRow
+  const setCrudService = useMemo(() => {
+    return {
+      getAll: async () => { /* Not used directly here */ return []; },
+      getById: async (id: number) => SetService.getById(id),
+      add: async (data: NewSet) => SetService.add(data),
+      update: async (item: SetRow) => SetService.update(item),
+      delete: async (id: number) => SetService.delete(id),
+    } as CrudService<SetRow, NewSet>;
+  }, []);
+
+  const {
+    data: sessionExercises,
+    isLoading: isLoadingSessionExercises,
+    error: sessionExercisesError,
+    refetch: refetchSessionExercises,
+    addItem: addSessionExercise, // Not directly used here, but good to have
+    updateItem: updateSessionExercise,
+    deleteItem: deleteSessionExercise,
+  } = useCrud(sessionExerciseCrudService);
+
+  const {
+    data: sets, // This will not be used directly as sets are nested within sessionExercises
+    isLoading: isLoadingSets,
+    error: setsError,
+    refetch: refetchSets, // This will be called after set operations
+    addItem: addSetCrud,
+    updateItem: updateSetCrud,
+    deleteItem: deleteSetCrud,
+  } = useCrud(setCrudService);
+
+  // Use useFocusEffect to refetch session exercises when the screen comes into focus
   useFocusEffect(
     useCallback(() => {
       if (isNaN(workoutIdNum)) {
         Alert.alert(t('general.error'), t('workoutDetails.invalidWorkoutId'));
         return;
       }
-      fetchWorkoutDetails();
-    }, [workoutIdNum, fetchWorkoutDetails, t])
+      refetchSessionExercises();
+      setInputValues({}); // Clear input values on refetch
+    }, [workoutIdNum, refetchSessionExercises, t])
   );
+
+  // Update grouped exercises whenever sessionExercises changes
+  useEffect(() => {
+    setGroupedExercises(groupExercisesBySuperset(sessionExercises));
+  }, [sessionExercises]);
 
   const handleAddExercise = () => {
     router.navigate(`/workout/${workout_id}/add-exercise`);
@@ -103,9 +153,9 @@ export default function WorkoutID() {
       date: undefined
     };
     try {
-      const newSetId = await SetService.add(newSet);
+      const newSetId = await addSetCrud(newSet); // Use useCrud's addItem
       if (newSetId) {
-        fetchWorkoutDetails();
+        refetchSessionExercises(); // Refetch all session exercises to get updated sets
       } else {
         Alert.alert(t('general.error'), t('workoutDetails.failedToAddSet'));
       }
@@ -117,7 +167,8 @@ export default function WorkoutID() {
 
   const updateSetInDb = async (updatedSet: SetRow) => {
     try {
-      await SetService.update(updatedSet);
+      await updateSetCrud(updatedSet); // Use useCrud's updateItem
+      // No need to refetch here, as handleSetChange will update local state
     } catch (error) {
       console.error("Error updating set:", error);
       Alert.alert(t('general.error'), t('workoutDetails.failedToUpdateSet'));
@@ -130,28 +181,25 @@ export default function WorkoutID() {
 
   const handleSetChange = (setId: number, field: keyof SetRow, value: string) => {
     const inputKey = getInputKey(setId, field);
-    
+
     // Update local input state immediately for UI responsiveness
     setInputValues(prev => ({
       ...prev,
       [inputKey]: value
     }));
-    
-    // Update the database value separately
+
+    // Update the sessionExercises state directly for immediate UI update
     const numericValue = value === '' ? null : Number(value) || null;
-    
-    setSessionExercises((prev) =>
-      prev.map((se) => ({
-        ...se,
-        sets: se.sets.map((set) => {
-          if (set.id === setId) {
-            return { ...set, [field]: numericValue };
-          }
-          return set;
-        }),
-      }))
-    );
-    
+    const updatedSessionExercises = sessionExercises.map((se) => ({
+      ...se,
+      sets: se.sets.map((set) => {
+        if (set.id === setId) {
+          return { ...set, [field]: numericValue };
+        }
+        return set;
+      }),
+    }));
+
     // Debounced database update
     debouncedUpdateSetInDb({
       id: setId,
@@ -170,56 +218,26 @@ export default function WorkoutID() {
 
   const handleCompleteSet = async (setId: number) => {
     try {
-      // Find the set and its current completed status
       const currentSessionExercise = sessionExercises.find(se => se.sets.some(s => s.id === setId));
       const currentSet = currentSessionExercise?.sets.find(s => s.id === setId);
 
       if (!currentSet) return;
 
       const newCompletedStatus = currentSet.completed === 1 ? 0 : 1;
+      const updatedSet = { ...currentSet, completed: newCompletedStatus };
 
-      // Optimistically update local state for immediate feedback
-      const updatedSessionExercisesOptimistic = sessionExercises.map(se => ({
-        ...se,
-        sets: se.sets.map(set =>
-          set.id === setId ? { ...set, completed: newCompletedStatus } : set
-        )
-      }));
-      setSessionExercises(updatedSessionExercisesOptimistic);
-      setGroupedExercises(groupExercisesBySuperset(updatedSessionExercisesOptimistic)); // Update groupedExercises immediately
-
-      // Update database
-      await SetService.update({ ...currentSet, completed: newCompletedStatus });
-
-      // After successful DB update, re-fetch sets for this exercise to ensure consistency
-      if (currentSessionExercise) {
-        const updatedSets = await SetService.getBySessionExerciseId(currentSessionExercise.id);
-        const updatedSessionExercisesConfirmed = sessionExercises.map(se =>
-          se.id === currentSessionExercise.id ? { ...se, sets: updatedSets } : se
-        );
-        setSessionExercises(updatedSessionExercisesConfirmed);
-        setGroupedExercises(groupExercisesBySuperset(updatedSessionExercisesConfirmed)); // Update groupedExercises again
-      }
-
+      await updateSetCrud(updatedSet); // Use useCrud's updateItem
+      refetchSessionExercises(); // Refetch to update the main state
     } catch (error) {
       console.error("Error updating set:", error);
       Alert.alert(t('general.error'), t('workoutDetails.failedToUpdateSet'));
-      // Revert optimistic update if DB update fails
-      const revertedSessionExercises = sessionExercises.map(se => ({
-        ...se,
-        sets: se.sets.map(set =>
-          set.id === setId ? { ...set, completed: set.completed === 1 ? 0 : 1 } : set // Revert to original
-        )
-      }));
-      setSessionExercises(revertedSessionExercises);
-      setGroupedExercises(groupExercisesBySuperset(revertedSessionExercises)); // Update groupedExercises on revert
     }
   };
 
   const handleRemoveSet = async (setId: number) => {
     try {
-      await SetService.delete(setId);
-      fetchWorkoutDetails();
+      await deleteSetCrud(setId); // Use useCrud's deleteItem
+      refetchSessionExercises(); // Refetch to update the main state
       setSelectedSet(null); // Close the dialog
     } catch (error) {
       console.error("Error removing set:", error);
@@ -227,21 +245,19 @@ export default function WorkoutID() {
     }
   };
 
-  const handleSetTypeChange = (newType: SetType) => {
+  const handleSetTypeChange = async (newType: SetType) => {
     if (!selectedSet) return;
 
     const updatedSet = { ...selectedSet, set_type: newType };
 
-    setSessionExercises((prev) =>
-      prev.map((se) => ({
-        ...se,
-        sets: se.sets.map((set) => (set.id === selectedSet.id ? updatedSet : set)),
-      }))
-    );
-
-    updateSetInDb(updatedSet);
-    fetchWorkoutDetails();
-    setSelectedSet(null); // Close the dialog
+    try {
+      await updateSetCrud(updatedSet); // Use useCrud's updateItem
+      refetchSessionExercises(); // Refetch to update the main state
+      setSelectedSet(null); // Close the dialog
+    } catch (error) {
+      console.error("Error updating set type:", error);
+      Alert.alert(t('general.error'), t('workoutDetails.failedToUpdateSet'));
+    }
   };
 
   const handleOpenSetOptions = (set: SetRow) => {
@@ -264,7 +280,6 @@ export default function WorkoutID() {
       }
     });
 
-    // Add superset groups (sorted by superset number)
     const sortedSupersets = Array.from(supersetMap.entries()).sort(
       (a, b) => (a[1][0]?.supersetDetails?.number || 0) - (b[1][0]?.supersetDetails?.number || 0)
     );
@@ -272,11 +287,10 @@ export default function WorkoutID() {
     sortedSupersets.forEach(([supersetId, exercises]) => {
       grouped.push({
         superset: exercises[0].supersetDetails!,
-        exercises: exercises.sort((a, b) => a.id - b.id) // Sort exercises within superset by creation order
+        exercises: exercises.sort((a, b) => a.id - b.id)
       });
     });
 
-    // Add non-superset exercises
     noSupersetExercises.forEach(exercise => {
       grouped.push({ exercises: [exercise] });
     });
@@ -295,8 +309,8 @@ export default function WorkoutID() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await SessionExerciseService.delete(sessionExerciseId);
-              fetchWorkoutDetails();
+              await deleteSessionExercise(sessionExerciseId); // Use useCrud's deleteItem
+              refetchSessionExercises(); // Refetch to update the main state
             } catch (error) {
               console.error('Error deleting exercise:', error);
               Alert.alert(t('general.error'), 'Failed to delete exercise');
@@ -315,9 +329,9 @@ export default function WorkoutID() {
     if (!selectedExerciseForSuperset) return;
     try {
       const updatedExercise = { ...selectedExerciseForSuperset, superset_id: supersetId };
-      await SessionExerciseService.update(updatedExercise);
+      await updateSessionExercise(updatedExercise); // Use useCrud's updateItem
       setSelectedExerciseForSuperset(null);
-      fetchWorkoutDetails();
+      refetchSessionExercises(); // Refetch to update the main state
     } catch (error) {
       console.error('Error updating superset:', error);
       Alert.alert(t('general.error'), 'Failed to update superset');
@@ -341,7 +355,7 @@ export default function WorkoutID() {
     const supersetStyles = supersetId ? getSupersetStyles(supersetId, isDark) : null;
 
     return (
-      <View 
+      <View
         className={`${workout.exerciseBlockContainer} ${isInSuperset ? 'ml-4' : ''}`}
         style={isInSuperset && supersetStyles ? supersetStyles.leftBorder : undefined}
       >
@@ -436,37 +450,37 @@ export default function WorkoutID() {
     if (item.superset) {
       const isCollapsed = collapsedSupersets.has(item.superset.id);
       const supersetStyles = getSupersetStyles(item.superset.id, isDark);
-      
+
       return (
         <View className="mb-4">
-          <TouchableOpacity 
+          <TouchableOpacity
             className="p-3 rounded-t-lg flex-row justify-between items-center"
             style={supersetStyles.headerContainer}
             onPress={() => toggleSupersetCollapse(item.superset!.id)}
           >
-            <Text 
+            <Text
               className="font-bold text-lg flex-1"
               style={supersetStyles.headerText}
             >
               {t('superset.supersetNumber', { number: item.superset.number })}: {item.superset.note}
             </Text>
             <View className="flex-row items-center">
-              <Text 
+              <Text
                 className="text-sm mr-2"
                 style={[supersetStyles.headerText, { opacity: 0.8 }]}
               >
                 {item.exercises.length} {item.exercises.length === 1 ? 'exercise' : 'exercises'}
               </Text>
-              <Feather 
-                name={isCollapsed ? "chevron-down" : "chevron-up"} 
-                size={20} 
-                color={supersetStyles.headerText.color} 
+              <Feather
+                name={isCollapsed ? "chevron-down" : "chevron-up"}
+                size={20}
+                color={supersetStyles.headerText.color}
               />
             </View>
           </TouchableOpacity>
-          
+
           {!isCollapsed && (
-            <View 
+            <View
               className="p-2 rounded-b-lg"
               style={supersetStyles.contentContainer}
             >
@@ -478,11 +492,11 @@ export default function WorkoutID() {
               ))}
             </View>
           )}
-          
+
           {/* Rounded bottom when collapsed */}
           {isCollapsed && (
-            <View 
-              className="h-1 rounded-b-lg" 
+            <View
+              className="h-1 rounded-b-lg"
               style={{ backgroundColor: supersetStyles.headerContainer.backgroundColor }}
             />
           )}
@@ -530,7 +544,7 @@ export default function WorkoutID() {
           />
         </BottomSheetDialog>
       )}
-      
+
       {selectedExerciseForSuperset && (
         <SupersetDialog
           isVisible={selectedExerciseForSuperset !== null}

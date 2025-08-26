@@ -1,32 +1,46 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import Input from "../../../components/Input";
-import { useForm, Controller } from "react-hook-form";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { ExerciseService } from "../../../database/database";
-import { NewExercise } from "../../../database/types/dbTypes";
+import { NewExercise, ExerciseRow } from "../../../database/types/dbTypes";
 import { form, layout } from "../../../styles/theme";
+import { useCrud, CrudService } from "../../../hooks/useCrud";
 
 export default function CreateExercise() {
   const { t } = useTranslation();
-  const { control, handleSubmit, formState: { errors } } = useForm<NewExercise>({
-    defaultValues: {
-      name: "",
-      couting_type: "reps",
-      note: null,
-      active: 1,
-    },
-  });
+  const [name, setName] = useState("");
+  const [note, setNote] = useState("");
+  const [nameError, setNameError] = useState<string | null>(null);
 
-  const onSubmit = async (data: NewExercise) => {
+  const exerciseCrudService = useMemo(() => ({
+    getAll: async () => { return []; },
+    getById: async (id: number) => { return null; },
+    add: (data: NewExercise) => ExerciseService.add(data),
+    update: (item: ExerciseRow) => ExerciseService.update(item),
+    delete: (id: number) => ExerciseService.delete(id),
+  }), []);
+
+  const { addItem: addExerciseCrud } = useCrud(exerciseCrudService);
+
+  const handleCreate = async () => {
+    if (!name.trim()) {
+      setNameError(t('createExercise.validation.nameRequired'));
+      return;
+    } else {
+      setNameError(null);
+    }
+
     try {
       const exerciseData: NewExercise = {
-        ...data,
-        active: data.active ? Number(data.active) : 1,
+        name: name,
+        couting_type: "reps",
+        note: note || null,
+        active: 1,
       };
 
-      const result = await ExerciseService.add(exerciseData);
+      const result = await addExerciseCrud(exerciseData);
       if (result) {
         Alert.alert(t('createExercise.success'), t('createExercise.success'));
         router.back();
@@ -41,37 +55,24 @@ export default function CreateExercise() {
 
   return (
     <View className={layout.container}>
-      <Controller
-        control={control}
-        rules={{ required: t('createExercise.validation.nameRequired') }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            className={form.textInput}
-            placeholder={t('createExercise.namePlaceholder')}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name="name"
-      />
-      {errors.name && <Text className={form.errorText}>{errors.name.message}</Text>}
+      <Text className={layout.title}>{t('createExercise.button')}</Text>
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            className={form.textInput}
-            placeholder={t('createExercise.notePlaceholder')}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value || ""}
-          />
-        )}
-        name="note"
+      <Input
+        className={form.textInput}
+        placeholder={t('createExercise.namePlaceholder')}
+        onChangeText={setName}
+        value={name}
+      />
+      {nameError && <Text className={form.errorText}>{nameError}</Text>}
+
+      <Input
+        className={form.textInput}
+        placeholder={t('createExercise.notePlaceholder')}
+        onChangeText={setNote}
+        value={note}
       />
 
-      <TouchableOpacity onPress={handleSubmit(onSubmit)} className={form.button}>
+      <TouchableOpacity onPress={handleCreate} className={form.button}>
         <Text className={form.buttonText}>{t('createExercise.button')}</Text>
       </TouchableOpacity>
     </View>

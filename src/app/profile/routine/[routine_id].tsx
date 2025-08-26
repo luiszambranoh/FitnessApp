@@ -23,9 +23,8 @@ import SetOptionsContent from "../../workout/dialog/SetOptionsContent";
 import BottomSheetDialog from "../../../components/BottomSheetDialog";
 import SupersetDialog from "../../workout/dialog/SupersetDialog";
 import { getSupersetStyles } from "../../../utils/supersetColors";
-import { useCrud } from "../../../hooks/useCrud";
+import { useCrud, CrudService } from "../../../hooks/useCrud";
 
-// Debounce utility function
 const debounce = (func: Function, delay: number) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
@@ -45,7 +44,6 @@ export default function RoutineIdScreen() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const [routine, setRoutine] = useState<RoutineRow | null>(null);
   const [fullRoutineExercises, setFullRoutineExercises] = useState<FullRoutineExercise[]>([]);
   const [selectedSet, setSelectedSet] = useState<RoutineSetRow | null>(null);
   const [selectedExerciseForSuperset, setSelectedExerciseForSuperset] = useState<FullRoutineExercise | null>(null);
@@ -53,6 +51,16 @@ export default function RoutineIdScreen() {
   const [collapsedSupersets, setCollapsedSupersets] = useState<Set<number>>(new Set());
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const routineIdNum = Number(routine_id);
+
+  const routineService = useMemo(() => ({
+    getAll: async () => { return []; },
+    getById: (id: number) => RoutineService.getById(id),
+    add: async (data: RoutineRow) => RoutineService.add(data),
+    update: (item: RoutineRow) => RoutineService.update(item),
+    delete: (id: number) => RoutineService.delete(id),
+  }), []);
+
+  const { data: routine, refetch: refetchRoutine } = useCrud(routineService);
 
   const routineExerciseService = useMemo(() => ({
     getAll: () => RoutineService.getExercisesByRoutineId(routineIdNum),
@@ -74,16 +82,19 @@ export default function RoutineIdScreen() {
     refetch: refetchRoutineExercises
   } = useCrud(routineExerciseService);
 
-  const fetchRoutineDetails = useCallback(async () => {
-    if (isNaN(routineIdNum)) return;
-    try {
-      const fetchedRoutine = await RoutineService.getById(routineIdNum);
-      setRoutine(fetchedRoutine);
-    } catch (error) {
-      console.error("Error fetching routine details:", error);
-      Alert.alert(t('general.error'), t('routines.loadFailed'));
-    }
-  }, [routineIdNum, t]);
+  const routineSetService = useMemo(() => ({
+    getAll: async () => { return []; },
+    getById: async (id: number) => { return null; },
+    add: (data: NewRoutineSet) => RoutineService.addSet(data),
+    update: (item: RoutineSetRow) => RoutineService.updateSet(item),
+    delete: (id: number) => RoutineService.deleteSet(id),
+  }), []);
+
+  const { 
+    addItem: addRoutineSet, 
+    updateItem: updateRoutineSet, 
+    deleteItem: deleteRoutineSet,
+  } = useCrud(routineSetService);
 
   useEffect(() => {
     const enrichData = async () => {
@@ -117,9 +128,9 @@ export default function RoutineIdScreen() {
         Alert.alert(t('general.error'), t('routines.invalidId'));
         return;
       }
-      fetchRoutineDetails();
+      refetchRoutine();
       refetchRoutineExercises();
-    }, [routineIdNum, fetchRoutineDetails, refetchRoutineExercises, t])
+    }, [routineIdNum, refetchRoutine, refetchRoutineExercises, t])
   );
 
   const handleAddExercise = () => {
@@ -136,7 +147,7 @@ export default function RoutineIdScreen() {
       note: null,
     };
     try {
-      const newSetId = await RoutineService.addSet(newSet);
+      const newSetId = await addRoutineSet(newSet);
       if (newSetId) {
         refetchRoutineExercises();
       } else {
@@ -150,7 +161,7 @@ export default function RoutineIdScreen() {
 
   const updateSetInDb = async (updatedSet: RoutineSetRow) => {
     try {
-      await RoutineService.updateSet(updatedSet);
+      await updateRoutineSet(updatedSet);
       refetchRoutineExercises();
     } catch (error) {
       console.error("Error updating set:", error);
@@ -178,9 +189,9 @@ export default function RoutineIdScreen() {
 
   const handleRemoveSet = async (setId: number) => {
     try {
-      await RoutineService.deleteSet(setId);
+      await deleteRoutineSet(setId);
       refetchRoutineExercises();
-      setSelectedSet(null); // Close the dialog
+      setSelectedSet(null);
     } catch (error) {
       console.error("Error removing set:", error);
       Alert.alert(t('general.error'), t('routines.removeSetFailed'));
@@ -191,7 +202,7 @@ export default function RoutineIdScreen() {
     if (!selectedSet) return;
     const updatedSet = { ...selectedSet, set_type: newType };
     updateSetInDb(updatedSet);
-    setSelectedSet(null); // Close the dialog
+    setSelectedSet(null);
   };
 
   const handleOpenSetOptions = (set: RoutineSetRow) => {
@@ -425,7 +436,6 @@ export default function RoutineIdScreen() {
 
   return (
     <View className={layout.container}>
-        <Text className={layout.title}>{routine?.name}</Text>
       <TouchableOpacity
         onPress={handleAddExercise}
         className={workout.addExerciseButton}

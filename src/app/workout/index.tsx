@@ -1,25 +1,33 @@
 import { router } from "expo-router";
 import { View, Text, FlatList, Pressable, Alert, TouchableOpacity } from "react-native";
 import { RoutineService, WorkoutService } from '../../database/database';
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { WorkoutRow, RoutineRow } from "../../database/types/dbTypes";
 import { useTranslation } from "react-i18next";
 import { layout, form, list, table } from "../../styles/theme";
 import DropdownMenu from '../../components/DropdownMenu';
 import { FontAwesome } from '@expo/vector-icons';
 import { useCrud } from "../../hooks/useCrud";
+import { useFocusEffect } from "expo-router";
 
 export default function WorkoutScreen() {
-  const { data: workouts, addItem: addWorkout, deleteItem: deleteWorkout, refetch } = useCrud(WorkoutService);
-  const { data: routines } = useCrud(RoutineService);
+  const { data: workouts, addItem: addWorkout, deleteItem: deleteWorkout, refetch: refetchWorkouts } = useCrud(WorkoutService);
+  const { data: routines, refetch: refetchRoutines } = useCrud(RoutineService);
   const { t } = useTranslation();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchWorkouts();
+      refetchRoutines();
+    }, [refetchWorkouts, refetchRoutines])
+  );
 
   const handleCreateNewWorkout = async () => {
     try {
       const newId = await addWorkout({note: ""});
       if (newId) {
         router.navigate(`/workout/${newId}`);
-        refetch()
+        refetchWorkouts();
       } else {
         console.error(t('workoutList.createWorkoutFailed'));
       }
@@ -30,11 +38,10 @@ export default function WorkoutScreen() {
 
   const handleCreateWorkoutFromRoutine = async (routineId: number) => {
     try {
-      // This is a custom method not part of the standard CRUD service
       const newWorkoutId = await RoutineService.createWorkoutFromRoutine(routineId);
       if (newWorkoutId) {
         router.navigate(`/workout/${newWorkoutId}`);
-        refetch();
+        refetchWorkouts();
       } else {
         Alert.alert(t('general.error'), t('workoutList.createWorkoutFromRoutineError'));
       }
@@ -55,7 +62,7 @@ export default function WorkoutScreen() {
           onPress: async () => {
             try {
               await deleteWorkout(id);
-              refetch();
+              refetchWorkouts();
             } catch (error) {
               console.error(t('workoutList.deleteFail'), error);
               Alert.alert(t('general.error'), t('workoutList.deleteFail'));

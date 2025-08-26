@@ -96,7 +96,6 @@ export default function AddExercise() {
 
   return (
     <View className={`${layout.container} pb-20`}>
-      <Text className={layout.title}>{t('addExercise.title')}</Text>
       <SearchableDropdown
         onSearch={setSearchQuery}
         placeholder={t('general.search')}

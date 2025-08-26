@@ -10,6 +10,7 @@
     "language": "Language",
     "bodyData": "Body Data",
     "routine": "Routine",
+    "routines": "Routines",
     "database": "Database",
     "databaseTitle": "Database Management"
   },
@@ -54,7 +55,8 @@
     "error": "Error",
     "success": "Success",
     "unknownCountingType": "Unknown Counting Type",
-    "noData": "N/A"
+    "noData": "N/A",
+    "search": "Search..."
   },
   "exerciseDetails": {
     "loadError": "Failed to load exercise details.",
@@ -281,5 +283,13 @@
       "dropSet": "Dropset",
       "deleteSet": "Delete Set",
       "cancel": "Cancel"
+    }
+,
+    "routine": {
+      "detailsTitle": "Routine Details",
+      "addExerciseTitle": "Add Exercise to Routine"
+    },
+    "exercise": {
+      "detailsTitle": "Exercise Details"
     }
 }

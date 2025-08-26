@@ -21,14 +21,39 @@ export default function StackLayout(){
           title: t('settings.title')
         }}
       />
+      <Stack.Screen name="exercises"
+        options={{
+          title: t('exercises.title')
+        }}
+      />
+      <Stack.Screen name="exercises/[exercise_id]"
+        options={{
+          title: t('exercise.detailsTitle')
+        }}
+      />
       <Stack.Screen name="exercises/create-exercise"
         options={{
           title: t('createExercise.title')
         }}
       />
-      <Stack.Screen name="exercises"
+      <Stack.Screen name="routine" // Changed from "routine/index"
         options={{
-          title: t('exercises.title')
+          title: t('settings.routine')
+        }}
+      />
+      <Stack.Screen name="routine/[routine_id]"
+        options={{
+          title: t('routine.detailsTitle')
+        }}
+      />
+      <Stack.Screen name="routine/[routine_id]/add-exercise"
+        options={{
+          title: t('routine.addExerciseTitle')
+        }}
+      />
+      <Stack.Screen name="routine/create"
+        options={{
+          title: t('routines.createTitle')
         }}
       />
       <Stack.Screen name="theme"
@@ -44,11 +69,6 @@ export default function StackLayout(){
       <Stack.Screen name="body-data"
         options={{
           title: t('settings.bodyData')
-        }}
-      />
-      <Stack.Screen name="routine"
-        options={{
-          title: t('settings.routine')
         }}
       />
     </Stack>

@@ -112,7 +112,10 @@
     "addExercise": "Add Exercise",
     "noExercisesAdded": "No exercises added yet. Click the button above to add one!",
     "actions": "Actions",
-    "superset": "Superset"
+    "superset": "Superset",
+    "lastRepsHint": "Last Reps",
+    "lastWeightHint": "Last Weight",
+    "lastStats": "Last"
   },
   "workoutDetails": {
     "invalidWorkoutId": "Invalid Workout ID.",

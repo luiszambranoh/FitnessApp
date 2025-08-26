@@ -114,7 +114,9 @@
     "addExercise": "Agregar Ejercicio",
     "noExercisesAdded": "No se han agregado ejercicios todavía. ¡Haz clic en el botón de arriba para agregar uno!",
     "actions": "Acciones",
-    "superset": "Superserie"
+    "superset": "Superserie",
+    "lastRepsHint": "Últimas Reps",
+    "lastWeightHint": "Último Peso"
   },
   "workoutScreen": {
     "invalidId": "ID de Entrenamiento inválido.",

@@ -138,6 +138,41 @@ export class ExerciseService {
       return null;
     }
   }
+
+  static async getLastWorkoutBestSetStats(exerciseId: number, currentWorkoutId: number): Promise<{ weight: number | null, reps: number | null }> {
+    // Find the most recent session_exercise for this exercise, excluding the current workout
+    const sessionExerciseQuery = `
+      SELECT se.id
+      FROM session_exercises se
+      JOIN workouts w ON se.session_id = w.id
+      WHERE se.exercise_id = ? AND se.session_id != ?
+      ORDER BY w.date DESC, w.time DESC
+      LIMIT 1
+    `;
+    const sessionExerciseResult = await DatabaseHelper.query<{ id: number }>(sessionExerciseQuery, [exerciseId, currentWorkoutId]);
+
+    if (sessionExerciseResult.length === 0) {
+      return { weight: null, reps: null };
+    }
+
+    const lastSessionExerciseId = sessionExerciseResult[0].id;
+
+    // Get all sets for that session_exercise and find the one with the highest volume (weight * reps)
+    const bestSetQuery = `
+      SELECT weight, reps
+      FROM sets
+      WHERE session_exercise_id = ? AND weight IS NOT NULL AND reps IS NOT NULL
+      ORDER BY (weight * reps) DESC
+      LIMIT 1
+    `;
+    const bestSetResult = await DatabaseHelper.query<{ weight: number, reps: number }>(bestSetQuery, [lastSessionExerciseId]);
+
+    if (bestSetResult.length === 0) {
+      return { weight: null, reps: null };
+    }
+
+    return { weight: bestSetResult[0].weight, reps: bestSetResult[0].reps };
+  }
 }
 
 export class SessionExerciseService {

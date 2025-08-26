@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -7,11 +7,17 @@ import { ExerciseService } from '../../database/database';
 import { ExerciseRow } from '../../database/types/dbTypes';
 import ExerciseCard from '../../components/ExerciseCard';
 import { useCrud } from '../../hooks/useCrud';
+import SearchableDropdown from '../../components/SearchableDropdown';
 
 export default function ExercisesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: exercises } = useCrud(ExerciseService);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredExercises = exercises.filter(exercise =>
+    exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleSelectExercise = (exerciseId: number) => {
     router.push(`/profile/exercises/${exerciseId}`);
@@ -34,10 +40,15 @@ export default function ExercisesScreen() {
         </Link>
       </View>
 
+      <SearchableDropdown
+        onSearch={setSearchQuery}
+        placeholder={t('general.search')}
+      />
+
       <Text className={layout.title}>{t('exercises.title')}</Text>
 
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderExerciseItem}
         ListEmptyComponent={<Text className="text-gray-500 text-center mt-10">{t('exercises.noExercises')}</Text>}

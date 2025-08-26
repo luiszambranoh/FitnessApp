@@ -432,7 +432,7 @@ export default function RoutineIdScreen() {
       </TouchableOpacity>
 
       {isLoadingExercises && <Text>Loading exercises...</Text>}
-      {exercisesError && <Text>Error: {exercisesError}</Text>}
+      {exercisesError && <Text>{t('general.error')}: {exercisesError}</Text>}
 
       <FlatList
         data={groupedExercises}

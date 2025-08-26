@@ -88,7 +88,7 @@ export default function AddExercise() {
 
   return (
     <View className={`${layout.container} pb-20`}>
-      <Text className={layout.title}>{t('addExercise.title')} {workout_id}</Text>
+      <Text className={layout.title}>{t('addExercise.title')}</Text>
 
       {selectedExercises.length > 0 && (
         <View style={styles.sectionContainer}>

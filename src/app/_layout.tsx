@@ -67,7 +67,7 @@ function TabLayout() {
           onPress={retryInitialization}
           className="mt-6 px-6 py-3 bg-blue-500 rounded-lg"
         >
-          <Text className="text-white font-semibold">Retry</Text>
+          <Text className="text-white font-semibold">{t('general.retry')}</Text>
         </TouchableOpacity>
       </View>
     );

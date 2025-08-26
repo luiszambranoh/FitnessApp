@@ -70,7 +70,10 @@
   "common": {
     "unknownExercise": "Unknown Exercise",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "reps": "Reps",
+    "weightKg": "Weight (kg)",
+    "date": "Date"
   },
   "workout": {
     "title": "Workout",

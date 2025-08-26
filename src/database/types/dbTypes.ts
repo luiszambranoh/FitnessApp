@@ -31,6 +31,7 @@ export interface SessionExerciseRow {
 }
 
 export interface SetRow {
+  date: ReactNode;
   id: number;
   set_type: SetType;
   rest: string | null;

@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "nativewind";
 
-export default function StackLayout(){
+export default function StackLayout() {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
 
@@ -10,22 +10,30 @@ export default function StackLayout(){
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: colorScheme === 'dark' ? '#111827' : '#FFFFFF',
+          backgroundColor: colorScheme === "dark" ? "#111827" : "#FFFFFF",
         },
-        headerTintColor: colorScheme === 'dark' ? '#FFFFFF' : '#111827',
-        headerTitleAlign: 'center',
+        headerTintColor: colorScheme === "dark" ? "#FFFFFF" : "#111827",
+        headerTitleAlign: "center",
       }}
     >
-      <Stack.Screen name="index"
+      <Stack.Screen
+        name="index"
         options={{
-          title: t('workout.title')
+          title: t("workout.title"),
         }}
       />
-      <Stack.Screen name="[workout_id]"
+      <Stack.Screen
+        name="[workout_id]/index"
         options={{
-          title: t('workout.detailsTitle')
+          title: t("workout.detailsTitle"),
+        }}
+      />
+      <Stack.Screen
+        name="[workout_id]/add-exercise"
+        options={{
+          title: t("addExercise.title"),
         }}
       />
     </Stack>
-  )
+  );
 }

@@ -71,7 +71,10 @@
   "common": {
     "unknownExercise": "Ejercicio Desconocido",
     "cancel": "Cancelar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "reps": "Reps",
+    "weightKg": "Peso (kg)",
+    "date": "Fecha"
   },
   "workout": {
     "title": "Entrenamiento",

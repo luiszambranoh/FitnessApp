@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
 import { View, Text, TouchableOpacity, Alert, FlatList } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { SessionExerciseService, ExerciseService } from "../../../database/database";
-import { NewSessionExercise, ExerciseRow } from "../../../database/types/dbTypes";
+import { NewSessionExercise, ExerciseRow, SessionExerciseRow } from "../../../database/types/dbTypes"; // Added SessionExerciseRow
 import { useTranslation } from "react-i18next";
 import { layout, form, fixed } from "../../../styles/theme";
 import ExerciseCard from "../../../components/ExerciseCard";
 import SearchableDropdown from "../../../components/SearchableDropdown";
+import { useCrud, CrudService } from "../../../hooks/useCrud"; // Import useCrud and CrudService
 
 export default function AddExercise() {
   const { workout_id } = useLocalSearchParams();
@@ -14,13 +15,31 @@ export default function AddExercise() {
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useTranslation();
+  const workoutIdNum = Number(workout_id);
+
+  // Define the CrudService for SessionExercise
+  const sessionExerciseCrudService = useMemo(() => {
+    return {
+      getAll: async () => {
+        // This component doesn't need to fetch all session exercises via useCrud's getAll
+        // It fetches them directly in useEffect for filtering purposes.
+        return [];
+      },
+      getById: async (id: number) => SessionExerciseService.getById(id),
+      add: async (data: NewSessionExercise) => SessionExerciseService.add(data),
+      update: async (item: SessionExerciseRow) => SessionExerciseService.update(item),
+      delete: async (id: number) => SessionExerciseService.delete(id),
+    } as CrudService<SessionExerciseRow, NewSessionExercise>;
+  }, []);
+
+  const { addItem: addSessionExerciseCrud } = useCrud(sessionExerciseCrudService);
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
         const fetchedExercises = await ExerciseService.getAll();
         if (workout_id) {
-          const sessionExercises = await SessionExerciseService.getBySessionId(Number(workout_id));
+          const sessionExercises = await SessionExerciseService.getBySessionId(workoutIdNum);
           const addedExerciseIds = new Set(sessionExercises.map(se => se.exercise_id));
           const availableExercises = fetchedExercises.filter(ex => !addedExerciseIds.has(ex.id));
           setAllExercises(availableExercises);
@@ -33,7 +52,7 @@ export default function AddExercise() {
       }
     };
     fetchExercises();
-  }, [workout_id]);
+  }, [workout_id, workoutIdNum]); // Added workoutIdNum to dependencies
 
   const toggleExerciseSelection = (exerciseId: number) => {
     setSelectedExerciseIds((prevSelectedIds) => {
@@ -46,7 +65,7 @@ export default function AddExercise() {
   };
 
   const handleAddExercises = async () => {
-    if (!workout_id) {
+    if (isNaN(workoutIdNum)) { // Use workoutIdNum directly
       Alert.alert(t('general.error'), t('addExercise.missingWorkoutId'));
       return;
     }
@@ -58,12 +77,12 @@ export default function AddExercise() {
     try {
       for (const exerciseId of selectedExerciseIds) {
         const newSessionExercise: NewSessionExercise = {
-          session_id: Number(workout_id),
+          session_id: workoutIdNum, // Use workoutIdNum
           exercise_id: exerciseId,
           note: null,
           superset_id: null,
         };
-        await SessionExerciseService.add(newSessionExercise);
+        await addSessionExerciseCrud(newSessionExercise); // Use useCrud's addItem
       }
       Alert.alert(t('general.success'), t('addExercise.success'));
       router.back();

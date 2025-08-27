@@ -73,7 +73,7 @@ export class ExerciseService {
     const query = `
       SELECT s.* FROM sets s
       JOIN session_exercises se ON s.session_exercise_id = se.id
-      WHERE se.exercise_id = ? AND s.completed = 1
+      WHERE se.exercise_id = ? AND s.completed = 1 AND s.set_type = 'normal'
       ORDER BY s.id DESC
     `;
     return DatabaseHelper.query<SetRow>(query, [exerciseId]);
@@ -84,7 +84,7 @@ export class ExerciseService {
       SELECT s.*, w.date FROM sets s
       JOIN session_exercises se ON s.session_exercise_id = se.id
       JOIN workouts w ON se.session_id = w.id
-      WHERE se.exercise_id = ? AND s.completed = 1 AND s.weight IS NOT NULL AND s.reps IS NOT NULL
+      WHERE se.exercise_id = ? AND s.completed = 1 AND s.weight IS NOT NULL AND s.reps IS NOT NULL AND s.set_type = 'normal'
       ORDER BY s.weight DESC, s.reps DESC
       LIMIT 3
     `;
@@ -99,7 +99,7 @@ export class ExerciseService {
       FROM sets s
       JOIN session_exercises se ON s.session_exercise_id = se.id
       JOIN workouts w ON se.session_id = w.id
-      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.reps IS NOT NULL AND s.completed = 1
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.reps IS NOT NULL AND s.completed = 1 AND s.set_type = 'normal'
       GROUP BY week
       ORDER BY week ASC
     `;
@@ -111,7 +111,7 @@ export class ExerciseService {
       SELECT MAX(s.weight) AS pr
       FROM sets s
       JOIN session_exercises se ON s.session_exercise_id = se.id
-      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1 AND s.set_type = 'normal'
     `;
     const results = await DatabaseHelper.query<{ pr: number }>(query, [exerciseId]);
     return results[0]?.pr ?? null;
@@ -125,7 +125,7 @@ export class ExerciseService {
         COUNT(DISTINCT se.session_id) AS totalSessions
       FROM sets s
       JOIN session_exercises se ON s.session_exercise_id = se.id
-      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1
+      WHERE se.exercise_id = ? AND s.weight IS NOT NULL AND s.completed = 1 AND s.set_type = 'normal'
     `;
     const results = await DatabaseHelper.query<{ totalSets: number, totalWeight: number, totalSessions: number }>(query, [exerciseId]);
 
@@ -140,7 +140,6 @@ export class ExerciseService {
   }
 
   static async getLastWorkoutBestSetStats(exerciseId: number, currentWorkoutId: number): Promise<{ weight: number | null, reps: number | null }> {
-    // Find the most recent session_exercise for this exercise, excluding the current workout
     const sessionExerciseQuery = `
       SELECT se.id
       FROM session_exercises se
@@ -157,11 +156,10 @@ export class ExerciseService {
 
     const lastSessionExerciseId = sessionExerciseResult[0].id;
 
-    // Get all sets for that session_exercise and find the one with the highest volume (weight * reps)
     const bestSetQuery = `
       SELECT weight, reps
       FROM sets
-      WHERE session_exercise_id = ? AND weight IS NOT NULL AND reps IS NOT NULL
+      WHERE session_exercise_id = ? AND weight IS NOT NULL AND reps IS NOT NULL AND set_type = 'normal'
       ORDER BY (weight * reps) DESC
       LIMIT 1
     `;
@@ -419,7 +417,8 @@ export class RoutineService {
             reps: rSet.reps,
             rest: rSet.rest,
             note: rSet.note,
-            completed: 0 // Sets in a new workout are not completed
+            completed: 0,
+            date: undefined
           };
           await SetService.add(newSet);
         }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import Input from '../../components/Input';
-import { Link, router } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { layout, form, list } from '../../styles/theme';
 import { RoutineService } from '../../database/database';
@@ -15,6 +15,12 @@ export default function RoutinesScreen() {
   const [editingRoutineId, setEditingRoutineId] = useState<number | null>(null);
   const [newRoutineName, setNewRoutineName] = useState('');
   const [newRoutineNote, setNewRoutineNote] = useState<string | null>('');
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const handleEdit = (routine: RoutineRow) => {
     setEditingRoutineId(routine.id);

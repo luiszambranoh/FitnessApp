@@ -37,5 +37,13 @@ yarn-error.*
 *.tsbuildinfo
 
 # android and ios build files
-android/
+# Keep android source but ignore build outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/app/.cxx/
+android/app/src/main/assets/
+android/app/src/main/res/drawable-*/
+android/local.properties
+# Ignore iOS directory completely
 ios/

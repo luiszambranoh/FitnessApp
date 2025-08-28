@@ -13,13 +13,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
-        "enableFTS": false,
-        "useSQLCipher": false,
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
@@ -34,15 +29,16 @@
       [
         "expo-sqlite",
         {
-            "enableFTS": true,
-            "useSQLCipher": true,
-            "android": {
-              "enableFTS": false,
-              "useSQLCipher": false
-            }
+          "enableFTS": true,
+          "useSQLCipher": true,
+          "android": {
+            "enableFTS": false,
+            "useSQLCipher": false
           }
+        }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "extra": {
       "router": {},

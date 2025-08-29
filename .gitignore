@@ -39,12 +39,10 @@ yarn-error.*
 
 # android and ios build files
 # Keep android source but ignore build outputs
-android/app/build/
-android/build/
+android/gradle.properties
 android/.gradle/
 android/app/.cxx/
-android/app/src/main/assets/
-android/app/src/main/res/drawable-*/
-android/local.properties
+android/app/build/
+android/build/
 # Ignore iOS directory completely
 ios/

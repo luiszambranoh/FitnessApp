@@ -13,13 +13,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
-        "enableFTS": false,
-        "useSQLCipher": false,
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
@@ -34,21 +29,25 @@
       [
         "expo-sqlite",
         {
-            "enableFTS": true,
-            "useSQLCipher": true,
-            "android": {
-              "enableFTS": false,
-              "useSQLCipher": false
-            }
+          "enableFTS": true,
+          "useSQLCipher": true,
+          "android": {
+            "enableFTS": false,
+            "useSQLCipher": false
           }
+        }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "extra": {
       "router": {},
       "eas": {
         "projectId": "a1560a8a-5aa6-475a-92b5-427caa16bfe9"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.zalihy.fitnessapp"
     }
   }
 }

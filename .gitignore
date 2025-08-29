@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules/
+packaga-lock.json
 
 # Expo
 .expo/
